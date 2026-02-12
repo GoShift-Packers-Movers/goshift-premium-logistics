@@ -1,4 +1,4 @@
-import { Facebook, Twitter, Instagram, Linkedin, Mail, Phone, MapPin } from "lucide-react";
+import { Facebook, Instagram, Linkedin, Youtube, Mail, Phone, MapPin } from "lucide-react";
 import { Link } from "react-router-dom";
 import logo from "@/assets/logo.png";
 
@@ -14,9 +14,9 @@ const cities = ["Chennai", "Coimbatore", "Tirunelveli", "Tiruchirappalli", "Then
 const legal = ["Privacy Policy", "Terms of Service", "Refund Policy", "Cookie Policy", "Sitemap"];
 const socialColors = [
   "bg-[#1877F2] text-white hover:bg-[#1451b3]", // Facebook
-  "bg-[#1DA1F2] text-white hover:bg-[#177fbd]", // Twitter / X
   "bg-[#E1306C] text-white hover:bg-[#b32554]", // Instagram
   "bg-[#0A66C2] text-white hover:bg-[#084f95]", // LinkedIn
+  "bg-[#FF0000] text-white hover:bg-[#cc0000]", // YouTube
 ];
 
 export default function Footer() {
@@ -38,17 +38,17 @@ export default function Footer() {
               India's most trusted logistics and shifting partner. Moving homes, offices, and vehicles safely since 2018.
             </p>
             <div className="flex gap-3">
-              {[Facebook, Twitter, Instagram, Linkedin].map((Icon, i) => (
+              {[Facebook, Instagram, Linkedin, Youtube].map((Icon, i) => (
                 <a
                   key={i}
                   href={
                     i === 0
-                      ? "https://www.facebook.com"
+                      ? "https://www.facebook.com/share/188hh18KBY/"
                       : i === 1
-                      ? "https://www.twitter.com"
+                      ? "https://www.instagram.com/go_shift"
                       : i === 2
-                      ? "https://www.instagram.com"
-                      : "https://www.linkedin.com"
+                      ? "https://www.linkedin.com/in/go-shift-packers-and-movers-%C2%AE-01283a167/"
+                      : "https://youtube.com/@goshiftpackersandmovers?si=wuSclD0fxdS_Zokw"
                   }
                   target="_blank"
                   rel="noreferrer"
