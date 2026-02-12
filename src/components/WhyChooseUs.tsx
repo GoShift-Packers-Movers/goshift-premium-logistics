@@ -13,9 +13,17 @@ const reasons = [
 export default function WhyChooseUs() {
   return (
     <section className="py-24 lg:py-32 bg-hero relative overflow-hidden">
-      {/* Decorative */}
-      <div className="absolute top-0 right-0 h-96 w-96 rounded-full bg-accent/5 blur-[120px]" />
-      <div className="absolute bottom-0 left-0 h-64 w-64 rounded-full bg-accent/5 blur-[100px]" />
+      {/* Animated decorative blurs */}
+      <motion.div
+        className="absolute top-0 right-0 h-96 w-96 rounded-full bg-accent/5 blur-[120px]"
+        animate={{ scale: [1, 1.15, 1], x: [0, 15, 0] }}
+        transition={{ duration: 8, repeat: Infinity, ease: "easeInOut" }}
+      />
+      <motion.div
+        className="absolute bottom-0 left-0 h-64 w-64 rounded-full bg-accent/5 blur-[100px]"
+        animate={{ scale: [1, 1.2, 1], y: [0, -10, 0] }}
+        transition={{ duration: 6, repeat: Infinity, ease: "easeInOut", delay: 2 }}
+      />
 
       <div className="container mx-auto px-6 relative z-10">
         <motion.div
@@ -43,17 +51,18 @@ export default function WhyChooseUs() {
               whileInView={{ opacity: 1, y: 0 }}
               viewport={{ once: true }}
               transition={{ duration: 0.5, delay: i * 0.1 }}
-              className="group glass-dark rounded-2xl p-7 transition-all duration-300 hover:bg-primary-foreground/10"
+              whileHover={{ y: -4, backgroundColor: "rgba(255,255,255,0.1)" }}
+              className="group glass-dark rounded-2xl p-7 transition-all duration-300"
             >
-              <div className="mb-4 inline-flex h-12 w-12 items-center justify-center rounded-xl bg-accent-gradient shadow-glow">
+              <motion.div
+                className="mb-4 inline-flex h-12 w-12 items-center justify-center rounded-xl bg-accent-gradient shadow-glow"
+                whileHover={{ rotate: [0, -8, 8, 0], scale: 1.1 }}
+                transition={{ duration: 0.4 }}
+              >
                 <r.icon className="h-5 w-5 text-accent-foreground" />
-              </div>
-              <h3 className="font-display text-lg font-bold text-primary-foreground mb-2">
-                {r.title}
-              </h3>
-              <p className="text-sm text-primary-foreground/50 leading-relaxed">
-                {r.desc}
-              </p>
+              </motion.div>
+              <h3 className="font-display text-lg font-bold text-primary-foreground mb-2">{r.title}</h3>
+              <p className="text-sm text-primary-foreground/50 leading-relaxed">{r.desc}</p>
             </motion.div>
           ))}
         </div>
