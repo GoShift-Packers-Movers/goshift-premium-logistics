@@ -24,6 +24,7 @@ import TermsOfServicePage from "./pages/TermsOfService";
 import RefundPolicyPage from "./pages/RefundPolicy";
 import CookiePolicyPage from "./pages/CookiePolicy";
 import ServiceCitySeoPage from "./pages/ServiceCitySeoPage";
+import SitemapPage from "./pages/SitemapPage";
 
 const queryClient = new QueryClient();
 
@@ -64,6 +65,7 @@ const App = () => (
           <Route path="/terms-of-service" element={<TermsOfServicePage />} />
           <Route path="/refund-policy" element={<RefundPolicyPage />} />
           <Route path="/cookie-policy" element={<CookiePolicyPage />} />
+          <Route path="/sitemap" element={<SitemapPage />} />
           {/* ADD ALL CUSTOM ROUTES ABOVE THE CATCH-ALL "*" ROUTE */}
           <Route path="*" element={<NotFound />} />
         </Routes>

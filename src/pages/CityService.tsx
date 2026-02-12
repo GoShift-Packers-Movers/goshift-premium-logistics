@@ -71,7 +71,7 @@ export default function CityServicePage() {
           <div className="absolute inset-0">
             <img
               src={city.heroImage}
-              alt={`${city.name} logistics`}
+              alt={`GoShift ${city.name} logistics`}
               className="h-full w-full object-cover"
               loading="lazy"
             />

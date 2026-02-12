@@ -251,10 +251,10 @@ export default function ServiceCitySeoPage({ pageKey }: Props) {
               on time without last‑minute surprises.
             </p>
             <ul className="list-disc pl-5 space-y-2">
-              <li>End‑to‑end house shifting with packing, loading, transport and unloading.</li>
-              <li>Mini truck rentals for local store deliveries and small apartment moves.</li>
-              <li>Intercity transport for full‑truck and part‑load movements.</li>
-              <li>Tailored solutions for office relocations and SME logistics.</li>
+              <li>House Shifting Services for apartments, villas and independent homes.</li>
+              <li>Bike Shifting Services with secure two-wheeler handling.</li>
+              <li>Delivery Services and Intra-City Delivery Service for within-city moves.</li>
+              <li>Outside City Services for planned inter-city movements.</li>
             </ul>
 
             <h2 className="text-2xl font-bold text-foreground mt-8">How booking works</h2>
@@ -286,12 +286,12 @@ export default function ServiceCitySeoPage({ pageKey }: Props) {
               </li>
               <li>
                 <Link to="/services/office-relocation" className="text-accent hover:underline">
-                  Office Relocation
+                  Bike Shifting Services
                 </Link>
               </li>
               <li>
                 <Link to="/services/vehicle-transport" className="text-accent hover:underline">
-                  Vehicle Transport Service
+                  Packers and Movers Services
                 </Link>
               </li>
               <li>

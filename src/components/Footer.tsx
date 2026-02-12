@@ -2,9 +2,16 @@ import { Facebook, Twitter, Instagram, Linkedin, Mail, Phone, MapPin } from "luc
 import { Link } from "react-router-dom";
 import logo from "@/assets/logo.png";
 
-const services = ["House Shifting", "Office Relocation", "Vehicle Transport", "Warehouse Storage", "Packing & Moving", "International Moving"];
+const services = [
+  "House Shifting Services",
+  "Bike Shifting Services",
+  "Packers and Movers Services",
+  "Delivery Services",
+  "Intra-City Delivery Service",
+  "Outside City Services",
+];
 const cities = ["Chennai", "Coimbatore", "Tirunelveli", "Tiruchirappalli", "Theni"];
-const legal = ["Privacy Policy", "Terms of Service", "Refund Policy", "Cookie Policy"];
+const legal = ["Privacy Policy", "Terms of Service", "Refund Policy", "Cookie Policy", "Sitemap"];
 const socialColors = [
   "bg-[#1877F2] text-white hover:bg-[#1451b3]", // Facebook
   "bg-[#1DA1F2] text-white hover:bg-[#177fbd]", // Twitter / X
@@ -61,15 +68,15 @@ export default function Footer() {
                 <li key={s}>
                   <Link
                     to={
-                      s === "House Shifting"
+                      s === "House Shifting Services"
                         ? "/services/house-shifting"
-                        : s === "Office Relocation"
+                        : s === "Bike Shifting Services"
                         ? "/services/office-relocation"
-                        : s === "Vehicle Transport"
+                        : s === "Packers and Movers Services"
                         ? "/services/vehicle-transport"
-                        : s === "Warehouse Storage"
+                        : s === "Delivery Services"
                         ? "/services/warehouse-storage"
-                        : s === "Packing & Moving"
+                        : s === "Intra-City Delivery Service"
                         ? "/services/packing-moving"
                         : "/services/international-moving"
                     }
@@ -148,28 +155,38 @@ export default function Footer() {
         </div>
 
         {/* Bottom */}
-        <div className="pt-8 flex flex-col sm:flex-row items-center justify-between gap-4">
+        <div className="pt-8 pr-20 flex flex-col sm:flex-row items-center justify-between gap-4">
           <p className="text-xs text-primary-foreground/60">
             © 2026 GoShift. All rights reserved.
           </p>
           <div className="flex flex-wrap gap-4">
-            {legal.map((l) => (
-              <Link
-                key={l}
-                to={
-                  l === "Privacy Policy"
-                    ? "/privacy-policy"
-                    : l === "Terms of Service"
-                    ? "/terms-of-service"
-                    : l === "Refund Policy"
-                    ? "/refund-policy"
-                    : "/cookie-policy"
-                }
-                className="text-xs text-primary-foreground/60 hover:text-accent transition-colors"
-              >
-                {l}
-              </Link>
-            ))}
+            {legal.map((l) =>
+              l === "Sitemap" ? (
+                <Link
+                  key={l}
+                  to="/sitemap"
+                  className="text-xs text-primary-foreground/60 hover:text-accent transition-colors"
+                >
+                  Sitemap
+                </Link>
+              ) : (
+                <Link
+                  key={l}
+                  to={
+                    l === "Privacy Policy"
+                      ? "/privacy-policy"
+                      : l === "Terms of Service"
+                      ? "/terms-of-service"
+                      : l === "Refund Policy"
+                      ? "/refund-policy"
+                      : "/cookie-policy"
+                  }
+                  className="text-xs text-primary-foreground/60 hover:text-accent transition-colors"
+                >
+                  {l}
+                </Link>
+              ),
+            )}
           </div>
         </div>
       </div>

@@ -53,7 +53,7 @@ export default function HeroSection() {
               transition={{ duration: 0.6, delay: 0.2 }}
               className="mt-6 max-w-lg text-lg text-primary-foreground/70 leading-relaxed"
             >
-              Premium house shifting, vehicle transport & logistics services
+              Premium house shifting, bike shifting and delivery services
               across 500+ cities. Trusted by 50,000+ families for safe,
               on-time relocations.
             </motion.p>
@@ -171,10 +171,9 @@ export default function HeroSection() {
                       <option value="" disabled>
                         Select service
                       </option>
-                      <option>House Shifting</option>
-                      <option>Office Relocation</option>
-                      <option>Vehicle Transport</option>
-                      <option>Packing & Moving</option>
+                      <option>House Shifting Services</option>
+                      <option>Bike Shifting Services</option>
+                      <option>Delivery Services</option>
                     </select>
                   </div>
 

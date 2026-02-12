@@ -15,10 +15,13 @@ interface Message {
 }
 
 const botReplies: Record<string, string> = {
-  "Get a price quote": "I'd love to help! Please use our Price Estimator above, or share your pickup city, drop city, and service type and I'll get you a range.",
+  "Get a price quote":
+    "I'd love to help! Please use our Price Estimator above, or share your pickup city, drop city, and service type and I'll get you a range.",
   "Track my shipment": "Please share your tracking ID and I'll look it up for you right away! 📦",
-  "Services available": "We offer House Shifting, Office Relocation, Vehicle Transport, Warehouse Storage, Packing & Moving, and International Moving. Which one interests you?",
-  "Talk to support": "Connecting you to our support team... In the meantime, you can call us at 1800-123-456 (toll-free) or email hello@goshift.in 📞",
+  "Services available":
+    "We currently support House Shifting Services, Bike Shifting Services, Packers and Movers Services, Delivery Services, Intra-City Delivery Service and Outside City Services. Which one are you looking for?",
+  "Talk to support":
+    "Connecting you to our support team... In the meantime, you can call us at 1800-123-456 (toll-free) or email hello@goshift.in 📞",
 };
 
 export default function ChatbotWidget() {

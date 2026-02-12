@@ -124,12 +124,12 @@ export default function ContactPage() {
                 <div className="space-y-1">
                   <label className="block text-xs font-medium text-muted-foreground">Service Type</label>
                   <select className="w-full rounded-xl bg-background border border-border/60 px-3 py-2 text-sm text-foreground focus:outline-none focus-visible:ring-2 focus-visible:ring-accent/60">
-                    <option>House Shifting</option>
-                    <option>Office Relocation</option>
-                    <option>Vehicle Transport</option>
-                    <option>Warehouse Storage</option>
-                    <option>Packing &amp; Moving</option>
-                    <option>International Moving</option>
+                    <option>House Shifting Services</option>
+                    <option>Bike Shifting Services</option>
+                    <option>Packers and Movers Services</option>
+                    <option>Delivery Services</option>
+                    <option>Intra-City Delivery Service</option>
+                    <option>Outside City Services</option>
                   </select>
                 </div>
                 <div className="space-y-1">

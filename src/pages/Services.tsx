@@ -4,51 +4,51 @@ import { ArrowRight } from "lucide-react";
 const services = [
   {
     id: "house-shifting",
-    name: "House Shifting",
+    name: "House Shifting Services",
     image:
       "https://images.pexels.com/photos/7464705/pexels-photo-7464705.jpeg?auto=compress&cs=tinysrgb&w=1200",
     description:
-      "End-to-end home relocation with expert packing, safe loading, GPS-tracked transit, and careful setup at your new home.",
+      "Apartment and villa shifting with professional packing, careful loading and organised setup at your new home.",
   },
   {
     id: "office-relocation",
-    name: "Office Relocation",
+    name: "Bike Shifting Services",
     image:
-      "https://images.pexels.com/photos/4484078/pexels-photo-4484078.jpeg?auto=compress&cs=tinysrgb&w=1200",
+      "https://images.pexels.com/photos/1005638/pexels-photo-1005638.jpeg?auto=compress&cs=tinysrgb&w=1200",
     description:
-      "Planned corporate moves with IT equipment handling, weekend migrations, and minimal downtime for your teams.",
+      "Doorstep bike pickup, secure packing and transport with ramps and wheel chocks designed for two-wheelers.",
   },
   {
     id: "vehicle-transport",
-    name: "Vehicle Transport",
+    name: "Packers and Movers Services",
     image:
-      "https://images.pexels.com/photos/2199293/pexels-photo-2199293.jpeg?auto=compress&cs=tinysrgb&w=1200",
+      "https://images.pexels.com/photos/7464704/pexels-photo-7464704.jpeg?auto=compress&cs=tinysrgb&w=1200",
     description:
-      "Enclosed car carriers, bike cradles, and real-time tracking to move your vehicles safely across cities.",
+      "End-to-end packers and movers support for full-house moves, partial moves and small offices in your city.",
   },
   {
     id: "warehouse-storage",
-    name: "Warehouse Storage",
+    name: "Delivery Services",
     image:
       "https://images.pexels.com/photos/4484076/pexels-photo-4484076.jpeg?auto=compress&cs=tinysrgb&w=1200",
     description:
-      "Short and long-term storage with 24/7 CCTV, fire safety, and SKU-level inventory management options.",
+      "Point-to-point deliveries using mini trucks and tempos for furniture, appliances, and store orders.",
   },
   {
     id: "packing-moving",
-    name: "Packing & Moving",
+    name: "Intra-City Delivery Service",
     image:
-      "https://images.pexels.com/photos/7464703/pexels-photo-7464703.jpeg?auto=compress&cs=tinysrgb&w=1200",
+      "https://images.pexels.com/photos/6169054/pexels-photo-6169054.jpeg?auto=compress&cs=tinysrgb&w=1200",
     description:
-      "Premium multi-layer packing, labelling, and insured movement for fragile and high-value items.",
+      "Fast within-city pickup and drop across popular neighbourhoods with slot-based scheduling.",
   },
   {
     id: "international-moving",
-    name: "International Moving",
+    name: "Outside City Services",
     image:
       "https://images.pexels.com/photos/4484077/pexels-photo-4484077.jpeg?auto=compress&cs=tinysrgb&w=1200",
     description:
-      "Door-to-door global relocations with customs documentation, sea & air freight options, and destination support.",
+      "Planned inter-city movements with dedicated vehicles, line-haul routes and proactive tracking updates.",
   },
 ];
 
@@ -77,11 +77,11 @@ export default function ServicesPage() {
                 Services
               </span>
               <h1 className="text-3xl lg:text-5xl font-extrabold text-foreground mb-4">
-                End-to-End Logistics &amp; Shifting Services
+                Moving &amp; Delivery Services Built for Cities
               </h1>
               <p className="text-lg text-muted-foreground max-w-2xl">
-                Explore everything GoShift offers across home shifting, office relocations, vehicle moves,
-                storage, and more – all designed to keep your move stress-free.
+                Explore GoShift&apos;s core services across house shifting, bike shifting, packers and movers, and
+                within-city and outside-city delivery solutions.
               </p>
             </motion.div>
           </div>

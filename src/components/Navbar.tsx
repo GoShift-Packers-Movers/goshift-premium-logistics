@@ -11,15 +11,15 @@ const navItems = [
     label: "Services",
     to: "/services",
     children: [
-      { label: "House Shifting", to: "/services/house-shifting" },
-      { label: "Office Relocation", to: "/services/office-relocation" },
-      { label: "Vehicle Transport", to: "/services/vehicle-transport" },
+      { label: "House Shifting Services", to: "/services/house-shifting" },
+      { label: "Bike Shifting Services", to: "/services/office-relocation" },
+      { label: "Delivery Services", to: "/services/warehouse-storage" },
     ],
   },
   { label: "Gallery", to: "/gallery" },
   { label: "Blog", to: "/blog" },
+  { label: "Contact", to: "/contact" },
   { label: "Offers", to: "/offers" },
-   { label: "Contact", to: "/contact" },
 ];
 
 export default function Navbar() {

@@ -2,12 +2,12 @@ import { useState } from "react";
 import { motion } from "framer-motion";
 import { Calculator, MapPin, Truck, Tag, ArrowRight } from "lucide-react";
 
-const serviceTypes = ["House Shifting", "Office Relocation", "Vehicle Transport", "Packing Only", "International Moving"];
+const serviceTypes = ["House Shifting Services", "Bike Shifting Services", "Delivery Services"] as const;
 
 export default function PricingCalculator() {
   const [pickup, setPickup] = useState("");
   const [drop, setDrop] = useState("");
-  const [service, setService] = useState("");
+  const [service, setService] = useState<string>("");
   const [coupon, setCoupon] = useState("");
   const [showResult, setShowResult] = useState(false);
 
@@ -18,8 +18,13 @@ export default function PricingCalculator() {
   };
 
   const getEstimate = () => {
-    const base = service === "Vehicle Transport" ? 4000 : service === "International Moving" ? 50000 : 8000;
-    const assumedDistance = 100; // km, simple average since distance field is removed
+    let base = 8000;
+    if (service === "Bike Shifting Services") {
+      base = 3500;
+    } else if (service === "Delivery Services") {
+      base = 2500;
+    }
+    const assumedDistance = 100; // km, simple average for rough estimate
     const low = Math.round((base + assumedDistance * 8) / 100) * 100;
     const high = Math.round((low * 1.4) / 100) * 100;
     return { low: low.toLocaleString("en-IN"), high: high.toLocaleString("en-IN") };

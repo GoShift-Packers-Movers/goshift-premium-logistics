@@ -6,32 +6,32 @@ type Category = "all" | "moves" | "vehicles" | "storage";
 const images: { src: string; alt: string; category: Category }[] = [
   {
     src: "https://images.pexels.com/photos/7464705/pexels-photo-7464705.jpeg?auto=compress&cs=tinysrgb&w=1200",
-    alt: "Team packing boxes in living room",
+    alt: "GoShift team packing boxes in living room",
     category: "moves",
   },
   {
     src: "https://images.pexels.com/photos/7464703/pexels-photo-7464703.jpeg?auto=compress&cs=tinysrgb&w=1200",
-    alt: "Packed boxes ready for loading",
+    alt: "GoShift packed boxes ready for loading",
     category: "moves",
   },
   {
     src: "https://images.pexels.com/photos/2199293/pexels-photo-2199293.jpeg?auto=compress&cs=tinysrgb&w=1200",
-    alt: "Vehicle transport truck on highway",
+    alt: "GoShift vehicle transport truck on highway",
     category: "vehicles",
   },
   {
     src: "https://images.pexels.com/photos/4484076/pexels-photo-4484076.jpeg?auto=compress&cs=tinysrgb&w=1200",
-    alt: "Warehouse storage with stacked pallets",
+    alt: "GoShift warehouse storage with stacked pallets",
     category: "storage",
   },
   {
     src: "https://images.pexels.com/photos/6169054/pexels-photo-6169054.jpeg?auto=compress&cs=tinysrgb&w=1200",
-    alt: "Workers loading boxes into truck",
+    alt: "GoShift workers loading boxes into truck",
     category: "moves",
   },
   {
     src: "https://images.pexels.com/photos/4484072/pexels-photo-4484072.jpeg?auto=compress&cs=tinysrgb&w=1200",
-    alt: "Forklift moving goods in warehouse",
+    alt: "GoShift forklift moving goods in warehouse",
     category: "storage",
   },
 ];

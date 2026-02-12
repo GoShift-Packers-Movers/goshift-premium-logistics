@@ -83,7 +83,7 @@ export default function BlogPostPage() {
             <div className="relative max-w-5xl mx-auto rounded-3xl overflow-hidden shadow-elevated border border-border/60">
               <img
                 src={post.image}
-                alt={post.title}
+                alt={`GoShift ${post.title}`}
                 loading="lazy"
                 className="w-full h-64 md:h-80 object-cover"
               />

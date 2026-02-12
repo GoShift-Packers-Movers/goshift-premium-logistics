@@ -19,11 +19,11 @@ const offers = [
   },
   {
     code: "STORAGE20",
-    title: "20% OFF on First Month Storage",
-    description: "Applies to warehouse storage plans of 3 months or more.",
+    title: "20% OFF on Outside City Services",
+    description: "Applicable on select outside city services for moves booked at least 10 days in advance.",
     discount: "20% OFF",
     expires: "15 May 2026",
-    highlight: "Warehouse Storage",
+    highlight: "Outside City Services",
   },
 ];
 

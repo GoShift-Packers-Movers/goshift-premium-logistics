@@ -1,41 +1,41 @@
 import { motion } from "framer-motion";
-import { Home, Building2, Car, Warehouse, Package, Globe, ArrowRight } from "lucide-react";
+import { Home, Bike, Package, Truck, ArrowRight, Route } from "lucide-react";
 
 const services = [
   {
     icon: Home,
-    title: "House Shifting",
-    description: "End-to-end home relocation with professional packing, loading, and setup at your new place.",
+    title: "House Shifting Services",
+    description: "Complete home shifting with multi-layer packing, careful loading and setup at your new house.",
     color: "from-accent/10 to-accent/5",
   },
   {
-    icon: Building2,
-    title: "Office Relocation",
-    description: "Minimal downtime corporate moves with IT equipment handling and furniture reassembly.",
-    color: "from-navy/10 to-navy/5",
-  },
-  {
-    icon: Car,
-    title: "Vehicle Transport",
-    description: "Safe car and bike transport via enclosed carriers with real-time GPS tracking.",
-    color: "from-accent/10 to-accent/5",
-  },
-  {
-    icon: Warehouse,
-    title: "Warehouse Storage",
-    description: "Secure, climate-controlled storage solutions for short and long-term needs.",
+    icon: Bike,
+    title: "Bike Shifting Services",
+    description: "Doorstep bike pickup with safe packing, dedicated racks and careful handling during transit.",
     color: "from-navy/10 to-navy/5",
   },
   {
     icon: Package,
-    title: "Packing & Moving",
-    description: "Premium multi-layer packing with insurance coverage for fragile and valuable items.",
+    title: "Packers and Movers Services",
+    description: "End-to-end packers and movers support for flats, villas and small offices across the city.",
     color: "from-accent/10 to-accent/5",
   },
   {
-    icon: Globe,
-    title: "International Moving",
-    description: "Door-to-door international relocation with customs clearance and documentation support.",
+    icon: Truck,
+    title: "Delivery Services",
+    description: "On-demand mini-truck and tempo services for household items, store deliveries and small moves.",
+    color: "from-navy/10 to-navy/5",
+  },
+  {
+    icon: Route,
+    title: "Intra-City Delivery Service",
+    description: "Fast within-city pickup and drop across popular localities with time-slot based scheduling.",
+    color: "from-accent/10 to-accent/5",
+  },
+  {
+    icon: Truck,
+    title: "Outside City Services",
+    description: "Planned inter-city moves with fixed departures, live tracking and dedicated move coordinators.",
     color: "from-navy/10 to-navy/5",
   },
 ];
@@ -70,7 +70,8 @@ export default function ServicesSection() {
             <span className="text-gradient">Move Safely</span>
           </h2>
           <p className="mt-4 text-muted-foreground text-lg">
-            From local house shifting to international relocations — we handle it all with care, precision, and transparency.
+            From house shifting and bike shifting to local and outside-city deliveries — we handle it all with care,
+            precision, and transparency.
           </p>
         </motion.div>
 

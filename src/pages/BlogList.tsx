@@ -77,7 +77,7 @@ export default function BlogListPage() {
                   <div className="h-44 overflow-hidden">
                     <img
                       src={post.image}
-                      alt={post.title}
+                      alt={`GoShift ${post.title}`}
                       loading="lazy"
                       className="h-full w-full object-cover transition-transform duration-300 group-hover:scale-105"
                     />
