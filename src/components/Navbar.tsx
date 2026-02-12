@@ -8,14 +8,7 @@ const navItems = [
   {
     label: "Services",
     href: "#services",
-    children: [
-      "House Shifting",
-      "Office Relocation",
-      "Vehicle Transport",
-      "Warehouse Storage",
-      "Packing & Moving",
-      "International Moving",
-    ],
+    children: ["House Shifting", "Office Relocation", "Vehicle Transport", "Warehouse Storage", "Packing & Moving", "International Moving"],
   },
   { label: "Pricing", href: "#pricing" },
   { label: "Gallery", href: "#gallery" },
@@ -39,16 +32,20 @@ export default function Navbar() {
       initial={{ y: -100 }}
       animate={{ y: 0 }}
       transition={{ duration: 0.5, ease: "easeOut" }}
-      className={`fixed top-0 left-0 right-0 z-50 transition-all duration-300 ${
-        scrolled ? "glass shadow-soft py-3" : "bg-transparent py-5"
+      className={`fixed top-0 left-0 right-0 z-50 transition-all duration-500 ${
+        scrolled ? "glass shadow-soft py-3 backdrop-blur-xl" : "bg-transparent py-5"
       }`}
     >
       <div className="container mx-auto flex items-center justify-between px-6">
         {/* Logo */}
         <a href="#" className="flex items-center gap-2">
-          <div className="flex h-10 w-10 items-center justify-center rounded-lg bg-accent-gradient">
+          <motion.div
+            whileHover={{ rotate: [0, -5, 5, 0] }}
+            transition={{ duration: 0.4 }}
+            className="flex h-10 w-10 items-center justify-center rounded-lg bg-accent-gradient"
+          >
             <Truck className="h-5 w-5 text-accent-foreground" />
-          </div>
+          </motion.div>
           <span className="font-display text-xl font-bold text-foreground">
             Go<span className="text-gradient">Shift</span>
           </span>
@@ -60,22 +57,27 @@ export default function Navbar() {
             <div key={item.label} className="relative group">
               <a
                 href={item.href}
-                className="flex items-center gap-1 rounded-lg px-4 py-2 text-sm font-medium text-foreground/70 transition-colors hover:text-foreground hover:bg-secondary"
+                className="relative flex items-center gap-1 rounded-lg px-4 py-2 text-sm font-medium text-foreground/70 transition-colors hover:text-foreground"
               >
                 {item.label}
-                {item.children && <ChevronDown className="h-3 w-3" />}
+                {item.children && <ChevronDown className="h-3 w-3 transition-transform group-hover:rotate-180" />}
+                {/* Animated underline */}
+                <span className="absolute bottom-0 left-2 right-2 h-0.5 bg-accent rounded-full scale-x-0 group-hover:scale-x-100 transition-transform duration-300 origin-left" />
               </a>
               {item.children && (
-                <div className="absolute left-0 top-full pt-2 opacity-0 invisible group-hover:opacity-100 group-hover:visible transition-all duration-200">
+                <div className="absolute left-0 top-full pt-2 opacity-0 invisible group-hover:opacity-100 group-hover:visible transition-all duration-200 translate-y-1 group-hover:translate-y-0">
                   <div className="glass rounded-xl p-2 shadow-elevated min-w-[220px]">
-                    {item.children.map((child) => (
-                      <a
+                    {item.children.map((child, i) => (
+                      <motion.a
                         key={child}
                         href="#services"
+                        initial={{ opacity: 0, x: -10 }}
+                        whileInView={{ opacity: 1, x: 0 }}
+                        transition={{ delay: i * 0.05 }}
                         className="block rounded-lg px-4 py-2.5 text-sm text-foreground/70 transition-colors hover:text-foreground hover:bg-secondary"
                       >
                         {child}
-                      </a>
+                      </motion.a>
                     ))}
                   </div>
                 </div>
@@ -85,12 +87,14 @@ export default function Navbar() {
         </div>
 
         {/* CTA */}
-        <a
+        <motion.a
           href="#pricing"
-          className="hidden rounded-xl bg-accent-gradient px-6 py-2.5 text-sm font-semibold text-accent-foreground shadow-glow transition-transform hover:scale-105 lg:block"
+          whileHover={{ scale: 1.05, boxShadow: "0 0 30px hsl(24 95% 53% / 0.3)" }}
+          whileTap={{ scale: 0.95 }}
+          className="hidden rounded-xl bg-accent-gradient px-6 py-2.5 text-sm font-semibold text-accent-foreground shadow-glow lg:block"
         >
           Get Estimate
-        </a>
+        </motion.a>
 
         {/* Mobile toggle */}
         <button
@@ -126,23 +130,30 @@ export default function Navbar() {
                   >
                     {item.label}
                     {item.children && (
-                      <ChevronDown className={`h-4 w-4 transition-transform ${servicesOpen ? "rotate-180" : ""}`} />
+                      <ChevronDown className={`h-4 w-4 transition-transform duration-300 ${servicesOpen ? "rotate-180" : ""}`} />
                     )}
                   </a>
-                  {item.children && servicesOpen && (
-                    <div className="ml-4 space-y-1">
-                      {item.children.map((child) => (
-                        <a
-                          key={child}
-                          href="#services"
-                          onClick={() => setMobileOpen(false)}
-                          className="block rounded-lg px-4 py-2 text-sm text-muted-foreground hover:text-foreground"
-                        >
-                          {child}
-                        </a>
-                      ))}
-                    </div>
-                  )}
+                  <AnimatePresence>
+                    {item.children && servicesOpen && (
+                      <motion.div
+                        initial={{ height: 0, opacity: 0 }}
+                        animate={{ height: "auto", opacity: 1 }}
+                        exit={{ height: 0, opacity: 0 }}
+                        className="ml-4 space-y-1 overflow-hidden"
+                      >
+                        {item.children.map((child) => (
+                          <a
+                            key={child}
+                            href="#services"
+                            onClick={() => setMobileOpen(false)}
+                            className="block rounded-lg px-4 py-2 text-sm text-muted-foreground hover:text-foreground"
+                          >
+                            {child}
+                          </a>
+                        ))}
+                      </motion.div>
+                    )}
+                  </AnimatePresence>
                 </div>
               ))}
               <a
