@@ -2,9 +2,24 @@ import { motion } from "framer-motion";
 import { Star, Quote } from "lucide-react";
 
 const testimonials = [
-  { name: "Priya Sharma", role: "Relocated from Mumbai to Pune", text: "GoShift made our move completely stress-free. The team was professional, on-time, and handled our fragile items with incredible care. Highly recommend!", rating: 5 },
-  { name: "Rajesh Kumar", role: "Office Move — Bangalore", text: "We relocated our 50-person office over a weekend with zero downtime. GoShift's planning and execution were flawless. Our IT equipment arrived safely.", rating: 5 },
-  { name: "Ananya Patel", role: "Vehicle Transport — Delhi to Chennai", text: "Shipped my car across the country and received it in perfect condition. The GPS tracking gave me real-time peace of mind. Amazing service!", rating: 5 },
+  {
+    name: "Priya Sharma",
+    role: "Relocated from Mumbai to Pune",
+    text: "GoShift made our move completely stress-free. The team was professional, on-time, and handled our fragile items with incredible care. Highly recommend!",
+    rating: 5,
+  },
+  {
+    name: "Rajesh Kumar",
+    role: "Office Move — Bangalore",
+    text: "We relocated our 50-person office over a weekend with zero downtime. GoShift's planning and execution were flawless. Our IT equipment arrived safely.",
+    rating: 5,
+  },
+  {
+    name: "Ananya Patel",
+    role: "Vehicle Transport — Delhi to Chennai",
+    text: "Shipped my car across the country and received it in perfect condition. The GPS tracking gave me real-time peace of mind. Amazing service!",
+    rating: 5,
+  },
 ];
 
 export default function Testimonials() {
@@ -29,25 +44,16 @@ export default function Testimonials() {
           {testimonials.map((t, i) => (
             <motion.div
               key={t.name}
-              initial={{ opacity: 0, y: 40 }}
+              initial={{ opacity: 0, y: 30 }}
               whileInView={{ opacity: 1, y: 0 }}
               viewport={{ once: true }}
-              transition={{ duration: 0.5, delay: i * 0.15 }}
-              whileHover={{ y: -6, boxShadow: "0 20px 60px -15px hsl(222 60% 16% / 0.15)" }}
-              className="relative rounded-2xl bg-card p-7 shadow-card border border-border/50 transition-colors hover:border-accent/20"
+              transition={{ duration: 0.5, delay: i * 0.1 }}
+              className="relative rounded-2xl bg-card p-7 shadow-card border border-border/50"
             >
               <Quote className="absolute top-6 right-6 h-8 w-8 text-accent/15" />
               <div className="flex gap-1 mb-4">
                 {Array.from({ length: t.rating }).map((_, j) => (
-                  <motion.div
-                    key={j}
-                    initial={{ opacity: 0, scale: 0 }}
-                    whileInView={{ opacity: 1, scale: 1 }}
-                    viewport={{ once: true }}
-                    transition={{ delay: i * 0.15 + j * 0.08 }}
-                  >
-                    <Star className="h-4 w-4 fill-accent text-accent" />
-                  </motion.div>
+                  <Star key={j} className="h-4 w-4 fill-accent text-accent" />
                 ))}
               </div>
               <p className="text-sm text-muted-foreground leading-relaxed mb-6">
