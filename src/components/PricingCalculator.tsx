@@ -1,16 +1,13 @@
 import { useState } from "react";
 import { motion } from "framer-motion";
-import { Calculator, MapPin, Truck, Home as HomeIcon, Tag, ArrowRight } from "lucide-react";
+import { Calculator, MapPin, Truck, Tag, ArrowRight } from "lucide-react";
 
 const serviceTypes = ["House Shifting", "Office Relocation", "Vehicle Transport", "Packing Only", "International Moving"];
-const houseTypes = ["1 BHK", "2 BHK", "3 BHK", "4+ BHK", "Villa/Bungalow"];
 
 export default function PricingCalculator() {
   const [pickup, setPickup] = useState("");
   const [drop, setDrop] = useState("");
   const [service, setService] = useState("");
-  const [houseType, setHouseType] = useState("");
-  const [distance, setDistance] = useState("");
   const [coupon, setCoupon] = useState("");
   const [showResult, setShowResult] = useState(false);
 
@@ -22,15 +19,14 @@ export default function PricingCalculator() {
 
   const getEstimate = () => {
     const base = service === "Vehicle Transport" ? 4000 : service === "International Moving" ? 50000 : 8000;
-    const multiplier = houseType === "4+ BHK" || houseType === "Villa/Bungalow" ? 3 : houseType === "3 BHK" ? 2.2 : houseType === "2 BHK" ? 1.6 : 1;
-    const dist = parseInt(distance) || 100;
-    const low = Math.round((base * multiplier + dist * 8) / 100) * 100;
-    const high = Math.round(low * 1.4 / 100) * 100;
+    const assumedDistance = 100; // km, simple average since distance field is removed
+    const low = Math.round((base + assumedDistance * 8) / 100) * 100;
+    const high = Math.round((low * 1.4) / 100) * 100;
     return { low: low.toLocaleString("en-IN"), high: high.toLocaleString("en-IN") };
   };
 
   return (
-    <section id="pricing" className="py-24 lg:py-32">
+    <section id="pricing" className="py-1 lg:py-1">
       <div className="container mx-auto px-6">
         <motion.div
           initial={{ opacity: 0, y: 20 }}
@@ -110,34 +106,6 @@ export default function PricingCalculator() {
                       <option key={s} value={s}>{s}</option>
                     ))}
                   </select>
-                </div>
-                <div className="space-y-1.5">
-                  <label className="text-xs font-medium text-muted-foreground flex items-center gap-1.5">
-                    <HomeIcon className="h-3.5 w-3.5 text-accent" /> House Type
-                  </label>
-                  <select
-                    value={houseType}
-                    onChange={(e) => setHouseType(e.target.value)}
-                    className="w-full rounded-xl border border-border bg-secondary/50 px-4 py-3 text-sm text-foreground focus:outline-none focus:ring-2 focus:ring-accent/30 transition-all appearance-none"
-                  >
-                    <option value="">Select type</option>
-                    {houseTypes.map((h) => (
-                      <option key={h} value={h}>{h}</option>
-                    ))}
-                  </select>
-                </div>
-              </div>
-
-              <div className="grid gap-5 sm:grid-cols-2">
-                <div className="space-y-1.5">
-                  <label className="text-xs font-medium text-muted-foreground">Distance (km)</label>
-                  <input
-                    type="number"
-                    value={distance}
-                    onChange={(e) => setDistance(e.target.value)}
-                    placeholder="e.g. 1400"
-                    className="w-full rounded-xl border border-border bg-secondary/50 px-4 py-3 text-sm text-foreground placeholder:text-muted-foreground/50 focus:outline-none focus:ring-2 focus:ring-accent/30 transition-all"
-                  />
                 </div>
                 <div className="space-y-1.5">
                   <label className="text-xs font-medium text-muted-foreground flex items-center gap-1.5">

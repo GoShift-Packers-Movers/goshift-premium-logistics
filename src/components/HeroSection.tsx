@@ -1,6 +1,7 @@
 import { motion } from "framer-motion";
-import { ArrowRight, Play } from "lucide-react";
-import heroImage from "@/assets/hero-logistics.jpg";
+import { ArrowRight, Play, Calculator, MapPin, Truck, Tag } from "lucide-react";
+import { Link } from "react-router-dom";
+import heroImage from "@/assets/hero-logistics.png";
 
 export default function HeroSection() {
   return (
@@ -63,13 +64,13 @@ export default function HeroSection() {
               transition={{ duration: 0.6, delay: 0.3 }}
               className="mt-8 flex flex-wrap gap-4"
             >
-              <a
-                href="#pricing"
+              <Link
+                to="/pricing"
                 className="group flex items-center gap-2 rounded-xl bg-accent-gradient px-8 py-4 text-base font-semibold text-accent-foreground shadow-glow transition-all hover:scale-105 hover:shadow-[0_0_50px_hsl(24_95%_53%/0.3)]"
               >
                 Get Free Estimate
                 <ArrowRight className="h-4 w-4 transition-transform group-hover:translate-x-1" />
-              </a>
+              </Link>
               <button className="group flex items-center gap-3 rounded-xl glass-dark px-6 py-4 text-base font-medium text-primary-foreground/90 transition-all hover:bg-primary-foreground/10">
                 <span className="flex h-10 w-10 items-center justify-center rounded-full bg-accent-gradient">
                   <Play className="h-4 w-4 text-accent-foreground ml-0.5" />
@@ -102,40 +103,98 @@ export default function HeroSection() {
             </motion.div>
           </div>
 
-          {/* Quick Estimator Card */}
+          {/* Price Estimator Card (Hero) */}
           <motion.div
             initial={{ opacity: 0, x: 40 }}
             animate={{ opacity: 1, x: 0 }}
             transition={{ duration: 0.7, delay: 0.3 }}
             className="hidden lg:block"
           >
-            <div className="glass-dark rounded-2xl p-8 shadow-elevated">
-              <h3 className="font-display text-xl font-bold text-primary-foreground mb-1">
-                Quick Price Estimate
-              </h3>
-              <p className="text-sm text-primary-foreground/50 mb-6">
-                Get an instant estimate for your move
-              </p>
-              <div className="space-y-4">
-                <input
-                  type="text"
-                  placeholder="Pickup City"
-                  className="w-full rounded-xl bg-primary-foreground/5 border border-primary-foreground/10 px-4 py-3 text-sm text-primary-foreground placeholder:text-primary-foreground/30 focus:outline-none focus:border-accent/50 transition-colors"
-                />
-                <input
-                  type="text"
-                  placeholder="Drop City"
-                  className="w-full rounded-xl bg-primary-foreground/5 border border-primary-foreground/10 px-4 py-3 text-sm text-primary-foreground placeholder:text-primary-foreground/30 focus:outline-none focus:border-accent/50 transition-colors"
-                />
-                <select className="w-full rounded-xl bg-primary-foreground/5 border border-primary-foreground/10 px-4 py-3 text-sm text-primary-foreground/60 focus:outline-none focus:border-accent/50 transition-colors appearance-none">
-                  <option>Select Service Type</option>
-                  <option>House Shifting</option>
-                  <option>Vehicle Transport</option>
-                  <option>Office Relocation</option>
-                  <option>Packing & Moving</option>
-                </select>
-                <button className="w-full rounded-xl bg-accent-gradient py-3.5 text-sm font-semibold text-accent-foreground shadow-glow transition-transform hover:scale-[1.02]">
-                  Get Estimate →
+            <div className="max-w-md rounded-3xl bg-white shadow-elevated overflow-hidden ml-auto">
+              {/* Header */}
+              <div className="bg-gradient-to-r from-navy-dark to-navy px-6 py-5 flex items-center gap-3">
+                <div className="flex h-11 w-11 items-center justify-center rounded-2xl bg-accent-gradient text-accent-foreground shadow-glow">
+                  <Calculator className="h-5 w-5" />
+                </div>
+                <div>
+                  <p className="text-[11px] font-semibold uppercase tracking-[0.25em] text-accent/80">
+                    Pricing
+                  </p>
+                  <h3 className="font-display text-lg font-bold text-white">
+                    Transparent Price Estimator
+                  </h3>
+                  <p className="text-xs text-white/70 mt-0.5">
+                    Get an instant estimate. No hidden charges, no surprises.
+                  </p>
+                </div>
+              </div>
+
+              {/* Form body */}
+              <div className="bg-white px-6 pb-6 pt-5">
+                <div className="grid gap-4 sm:grid-cols-2">
+                  {/* Pickup Location */}
+                  <div>
+                    <div className="flex items-center gap-2 text-[11px] font-medium uppercase tracking-wide text-slate-500">
+                      <MapPin className="h-3.5 w-3.5 text-accent" />
+                      <span>Pickup Location</span>
+                    </div>
+                    <input
+                      type="text"
+                      placeholder="e.g. Mumbai"
+                      className="mt-1 w-full rounded-xl border border-slate-200 bg-slate-50/80 px-3.5 py-2.5 text-sm text-slate-800 placeholder:text-slate-400 focus:border-accent/60 focus:ring-2 focus:ring-accent/25 focus:outline-none transition"
+                    />
+                  </div>
+
+                  {/* Drop Location */}
+                  <div>
+                    <div className="flex items-center gap-2 text-[11px] font-medium uppercase tracking-wide text-slate-500">
+                      <MapPin className="h-3.5 w-3.5 text-accent" />
+                      <span>Drop Location</span>
+                    </div>
+                    <input
+                      type="text"
+                      placeholder="e.g. Delhi"
+                      className="mt-1 w-full rounded-xl border border-slate-200 bg-slate-50/80 px-3.5 py-2.5 text-sm text-slate-800 placeholder:text-slate-400 focus:border-accent/60 focus:ring-2 focus:ring-accent/25 focus:outline-none transition"
+                    />
+                  </div>
+
+                  {/* Service Type */}
+                  <div>
+                    <div className="flex items-center gap-2 text-[11px] font-medium uppercase tracking-wide text-slate-500">
+                      <Truck className="h-3.5 w-3.5 text-accent" />
+                      <span>Service Type</span>
+                    </div>
+                    <select
+                      className="mt-1 w-full rounded-xl border border-slate-200 bg-slate-50/80 px-3.5 py-2.5 text-sm text-slate-700 focus:border-accent/60 focus:ring-2 focus:ring-accent/25 focus:outline-none transition"
+                      defaultValue=""
+                    >
+                      <option value="" disabled>
+                        Select service
+                      </option>
+                      <option>House Shifting</option>
+                      <option>Office Relocation</option>
+                      <option>Vehicle Transport</option>
+                      <option>Packing & Moving</option>
+                    </select>
+                  </div>
+
+                  {/* Coupon Code */}
+                  <div>
+                    <div className="flex items-center gap-2 text-[11px] font-medium uppercase tracking-wide text-slate-500">
+                      <Tag className="h-3.5 w-3.5 text-accent" />
+                      <span>Coupon Code</span>
+                    </div>
+                    <input
+                      type="text"
+                      placeholder="e.g. GOSHIFT20"
+                      className="mt-1 w-full rounded-xl border border-slate-200 bg-slate-50/80 px-3.5 py-2.5 text-sm text-slate-800 placeholder:text-slate-400 focus:border-accent/60 focus:ring-2 focus:ring-accent/25 focus:outline-none transition"
+                    />
+                  </div>
+                </div>
+
+                <button className="mt-5 flex w-full items-center justify-center gap-2 rounded-2xl bg-accent-gradient py-3.5 text-sm font-semibold text-accent-foreground shadow-glow transition-transform hover:scale-[1.02]">
+                  Calculate Estimate
+                  <ArrowRight className="h-4 w-4" />
                 </button>
               </div>
             </div>

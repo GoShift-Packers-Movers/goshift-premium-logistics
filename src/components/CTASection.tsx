@@ -1,5 +1,6 @@
 import { motion } from "framer-motion";
 import { ArrowRight, Phone } from "lucide-react";
+import { Link } from "react-router-dom";
 
 export default function CTASection() {
   return (
@@ -25,13 +26,13 @@ export default function CTASection() {
             Join 50,000+ satisfied customers. Get your free estimate today and experience the GoShift difference.
           </p>
           <div className="mt-10 flex flex-wrap items-center justify-center gap-4">
-            <a
-              href="#pricing"
+            <Link
+              to="/pricing"
               className="group flex items-center gap-2 rounded-xl bg-accent-gradient px-8 py-4 text-base font-semibold text-accent-foreground shadow-glow transition-all hover:scale-105"
             >
               Get Free Estimate
               <ArrowRight className="h-4 w-4 transition-transform group-hover:translate-x-1" />
-            </a>
+            </Link>
             <a
               href="tel:+911800123456"
               className="flex items-center gap-2 rounded-xl glass-dark px-8 py-4 text-base font-medium text-primary-foreground/90 transition-all hover:bg-primary-foreground/10"

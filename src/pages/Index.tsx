@@ -1,30 +1,29 @@
-import Navbar from "@/components/Navbar";
 import HeroSection from "@/components/HeroSection";
 import ServicesSection from "@/components/ServicesSection";
 import WhyChooseUs from "@/components/WhyChooseUs";
-import PricingCalculator from "@/components/PricingCalculator";
 import Testimonials from "@/components/Testimonials";
 import FAQSection from "@/components/FAQSection";
 import CTASection from "@/components/CTASection";
-import Footer from "@/components/Footer";
-import ChatbotWidget from "@/components/ChatbotWidget";
+import { Seo } from "@/components/Seo";
 
 const Index = () => {
   return (
-    <div className="min-h-screen bg-background">
-      <Navbar />
-      <main>
+    <>
+      <Seo
+        title="Packers and Movers, Truck Transport & House Shifting Services"
+        description="GoShift offers reliable packers and movers, truck transport and house shifting services with trained crews, transparent pricing and live tracking across major Indian cities."
+        canonical="/"
+        type="website"
+      />
+      <main className="bg-background">
         <HeroSection />
         <ServicesSection />
         <WhyChooseUs />
-        <PricingCalculator />
         <Testimonials />
         <FAQSection />
         <CTASection />
       </main>
-      <Footer />
-      <ChatbotWidget />
-    </div>
+    </>
   );
 };
 
