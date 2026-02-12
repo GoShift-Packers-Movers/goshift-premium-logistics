@@ -43,12 +43,12 @@ export default function Footer() {
                   key={i}
                   href={
                     i === 0
-                      ? "https://facebook.com"
+                      ? "https://www.facebook.com"
                       : i === 1
-                      ? "https://twitter.com"
+                      ? "https://www.twitter.com"
                       : i === 2
-                      ? "https://instagram.com"
-                      : "https://linkedin.com"
+                      ? "https://www.instagram.com"
+                      : "https://www.linkedin.com"
                   }
                   target="_blank"
                   rel="noreferrer"

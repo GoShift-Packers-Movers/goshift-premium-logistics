@@ -13,6 +13,10 @@ export default function HeroSection() {
           alt="GoShift logistics fleet on highway at golden hour"
           className="h-full w-full object-cover"
           loading="eager"
+          decoding="async"
+          width="1600"
+          height="900"
+          fetchpriority="high"
         />
         <div className="absolute inset-0 bg-hero opacity-80" />
         <div className="absolute inset-0 bg-gradient-to-r from-navy-dark/95 via-navy/80 to-transparent" />

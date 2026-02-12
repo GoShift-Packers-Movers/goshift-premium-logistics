@@ -10,7 +10,7 @@ type SeoProps = {
   jsonLd?: Record<string, any> | Array<Record<string, any>>;
 };
 
-const APP_ORIGIN = "https://goshift.in";
+const APP_ORIGIN = typeof window !== "undefined" ? window.location.origin : "https://goshift.in";
 
 function upsertMeta(selector: string, attributes: Record<string, string>) {
   let element = document.head.querySelector<HTMLMetaElement>(selector);

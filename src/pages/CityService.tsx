@@ -74,6 +74,9 @@ export default function CityServicePage() {
               alt={`GoShift ${city.name} logistics`}
               className="h-full w-full object-cover"
               loading="lazy"
+              decoding="async"
+              width="1600"
+              height="900"
             />
             <div className="absolute inset-0 bg-gradient-to-r from-navy-dark/95 via-navy/80 to-transparent" />
             <div className="absolute inset-0 bg-gradient-to-b from-transparent via-navy/10 to-navy/40" />
