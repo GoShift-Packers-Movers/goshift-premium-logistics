@@ -59,3 +59,30 @@ npm run build
 ```
 
 and serve the contents of the `dist` folder.
+
+## Pricing and offers (optional)
+
+The Price Calculator and Offers page can use live pricing and coupons from the admin panel. Set `VITE_APP_WEBSITE_API_URL` to your Cloud Functions base URL (e.g. `https://us-central1-YOUR_PROJECT.cloudfunctions.net`). If unset, the site uses fallback estimates and static offers.
+
+## Live chat (Tawk.to)
+
+The site uses a static chatbot by default. To use **Tawk.to** live chat instead:
+
+1. Create a Tawk.to account and add a Chat Widget (Administration → Channels → Chat Widget).
+2. From the widget’s embed code or Direct Chat Link, copy your **Property ID** and **Widget ID**.
+3. In `website/.env` add:
+   ```env
+   VITE_TAWK_PROPERTY_ID=your_property_id
+   VITE_TAWK_WIDGET_ID=default
+   ```
+4. Restart the dev server or rebuild. The Tawk.to widget will replace the static chatbot.
+
+If these env vars are not set, the static chatbot is shown.
+
+## Using Tawk.to in Customer / Driver mobile apps
+
+You can use the same Tawk.to property for Help & Support in your Flutter customer and driver apps:
+
+- **Flutter packages:** Use a package such as `flutter_tawk_to_plus` or `flutter_tawk_to_chat` (pub.dev). They embed the Tawk.to chat in a WebView and support visitor name/email and optional secure-mode hash.
+- **Flow:** From your app’s Help & Support screen, open a full-screen chat (e.g. via `Tawk()` widget with your Tawk Direct Chat Link or property/widget IDs). Users get the same live chat as on the website, and agents see one unified Tawk.to dashboard.
+- **Same property:** Use the same Tawk.to property (and widget) as the website so all channels (website, customer app, driver app) are in one place.

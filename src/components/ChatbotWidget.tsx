@@ -1,6 +1,11 @@
 import { useState } from "react";
 import { motion, AnimatePresence } from "framer-motion";
 import { MessageCircle, X, Send, Bot, User } from "lucide-react";
+import TawkMessengerReact from "@tawk.to/tawk-messenger-react";
+
+const TAWK_PROPERTY_ID = import.meta.env.VITE_TAWK_PROPERTY_ID ?? "";
+const TAWK_WIDGET_ID = import.meta.env.VITE_TAWK_WIDGET_ID ?? "";
+const USE_TAWK = Boolean(TAWK_PROPERTY_ID && TAWK_WIDGET_ID);
 
 const quickOptions = [
   "Get a price quote",
@@ -24,7 +29,7 @@ const botReplies: Record<string, string> = {
     "Connecting you to our support team... In the meantime, you can call us at 1800-123-456 (toll-free) or email hello@goshift.in 📞",
 };
 
-export default function ChatbotWidget() {
+function StaticChatbot() {
   const [isOpen, setIsOpen] = useState(false);
   const [messages, setMessages] = useState<Message[]>([
     { from: "bot", text: "Hi! 👋 I'm GoShift's assistant. How can I help you today?" },
@@ -40,7 +45,6 @@ export default function ChatbotWidget() {
 
   return (
     <>
-      {/* Floating button */}
       <motion.button
         initial={{ scale: 0 }}
         animate={{ scale: 1 }}
@@ -55,7 +59,6 @@ export default function ChatbotWidget() {
         )}
       </motion.button>
 
-      {/* Chat window */}
       <AnimatePresence>
         {isOpen && (
           <motion.div
@@ -65,7 +68,6 @@ export default function ChatbotWidget() {
             transition={{ duration: 0.2 }}
             className="fixed bottom-24 right-6 z-50 w-[360px] max-w-[calc(100vw-3rem)] rounded-2xl bg-card shadow-elevated border border-border/50 overflow-hidden"
           >
-            {/* Header */}
             <div className="bg-hero p-4 flex items-center gap-3">
               <div className="flex h-10 w-10 items-center justify-center rounded-full bg-accent-gradient">
                 <Bot className="h-5 w-5 text-accent-foreground" />
@@ -76,7 +78,6 @@ export default function ChatbotWidget() {
               </div>
             </div>
 
-            {/* Messages */}
             <div className="h-72 overflow-y-auto p-4 space-y-3">
               {messages.map((msg, i) => (
                 <div
@@ -105,7 +106,6 @@ export default function ChatbotWidget() {
               ))}
             </div>
 
-            {/* Quick options */}
             {messages.length <= 2 && (
               <div className="px-4 pb-3 flex flex-wrap gap-2">
                 {quickOptions.map((opt) => (
@@ -120,7 +120,6 @@ export default function ChatbotWidget() {
               </div>
             )}
 
-            {/* Input */}
             <div className="border-t border-border p-3">
               <form
                 onSubmit={(e) => {
@@ -148,4 +147,16 @@ export default function ChatbotWidget() {
       </AnimatePresence>
     </>
   );
+}
+
+export default function ChatbotWidget() {
+  if (USE_TAWK) {
+    return (
+      <TawkMessengerReact
+        propertyId={TAWK_PROPERTY_ID}
+        widgetId={TAWK_WIDGET_ID}
+      />
+    );
+  }
+  return <StaticChatbot />;
 }
