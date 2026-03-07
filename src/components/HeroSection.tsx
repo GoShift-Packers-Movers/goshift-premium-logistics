@@ -91,7 +91,7 @@ export default function HeroSection() {
               className="mt-12 grid grid-cols-3 gap-6 border-t border-primary-foreground/10 pt-8"
             >
               {[
-                { value: "50K+", label: "Successful Moves" },
+                { value: "50,000+", label: "Successful Moves" },
                 { value: "500+", label: "Cities Served" },
                 { value: "4.9★", label: "Customer Rating" },
               ].map((stat) => (

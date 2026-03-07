@@ -24,7 +24,7 @@ const timeline = [
 ];
 
 const stats = [
-  { label: "Successful Moves", value: "50K+" },
+  { label: "Successful Moves", value: "50,000+" },
   { label: "Cities Served", value: "25+" },
   { label: "Customer Rating", value: "4.9★" },
   { label: "Partner Fleet", value: "500+" },
