@@ -151,3 +151,18 @@
     box-shadow: var(--shadow-elevated);
   }
 }
+
+/* EmbedSocial gallery iframe: full width and min height so feed is visible */
+.embedsocial-hashtag iframe,
+.embedsocial-hashtag-iframe {
+  width: 100% !important;
+  min-height: 800px;
+  border: 0;
+}
+
+/* Hide EmbedSocial "Widget by EmbedSocial" / powered-by branding */
+.embedsocial-hashtag .feed-powered-by-es,
+.embedsocial-hashtag a.feed-powered-by-es,
+.es-widget-branding {
+  display: none !important;
+}

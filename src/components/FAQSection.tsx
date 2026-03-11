@@ -1,8 +1,8 @@
 import { useState } from "react";
 import { motion, AnimatePresence } from "framer-motion";
-import { ChevronDown } from "lucide-react";
+import { ChevronDown, Download } from "lucide-react";
 
-const faqs = [
+const faqs: { q: string; a: string | React.ReactNode }[] = [
   {
     q: "How does GoShift estimate pricing?",
     a: "Our pricing is based on distance, volume of goods, service type, and any special requirements. Use our Price Estimator for an instant range, then our team will provide an exact quote after a quick survey.",
@@ -26,6 +26,28 @@ const faqs = [
   {
     q: "Do you handle packing and unpacking?",
     a: "Yes, we offer full-service packing with premium multi-layer materials. Unpacking and furniture reassembly services are also available.",
+  },
+  {
+    q: "How to check and prepare my household inventory checklist things?",
+    a: (
+      <span className="block space-y-3">
+        <span className="block">Please download our PDF file and fill in your household inventory.</span>
+        <a
+          href="/inventory-checklist.pdf"
+          download="GoShift-Household-Inventory-Checklist.pdf"
+          target="_blank"
+          rel="noopener noreferrer"
+          className="inline-flex items-center gap-2 rounded-lg bg-accent/15 px-4 py-2.5 text-sm font-semibold text-accent hover:bg-accent/25 transition-colors"
+        >
+          <Download className="h-4 w-4" />
+          Download inventory checklist (PDF)
+        </a>
+      </span>
+    ),
+  },
+  {
+    q: "Do you have fittings for electrical appliances at the new home?",
+    a: "Yes, available. Use our add-on service in the application; charges are applicable.",
   },
 ];
 
@@ -79,9 +101,9 @@ export default function FAQSection() {
                     transition={{ duration: 0.2 }}
                     className="overflow-hidden"
                   >
-                    <p className="px-5 pb-5 sm:px-6 sm:pb-6 text-sm text-muted-foreground leading-relaxed">
-                      {faq.a}
-                    </p>
+                    <div className="px-5 pb-5 sm:px-6 sm:pb-6 text-sm text-muted-foreground leading-relaxed">
+                      {typeof faq.a === "string" ? <p>{faq.a}</p> : faq.a}
+                    </div>
                   </motion.div>
                 )}
               </AnimatePresence>

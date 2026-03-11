@@ -1,7 +1,34 @@
+import { useState } from "react";
 import { motion } from "framer-motion";
-import { Mail, Phone, MapPin, Clock } from "lucide-react";
+import { Mail, Phone, MapPin, Clock, CheckCircle, AlertCircle } from "lucide-react";
+import { submitToFormspree } from "@/lib/formspree";
 
 export default function ContactPage() {
+  const [status, setStatus] = useState<"idle" | "sending" | "success" | "error">("idle");
+  const [errorMessage, setErrorMessage] = useState("");
+
+  const handleSubmit = async (e: React.FormEvent<HTMLFormElement>) => {
+    e.preventDefault();
+    const form = e.currentTarget;
+    const data = new FormData(form);
+    setStatus("sending");
+    setErrorMessage("");
+    const result = await submitToFormspree({
+      _subject: "Contact: Enquiry from website",
+      name: (data.get("name") as string) || "",
+      phone: (data.get("phone") as string) || "",
+      serviceType: (data.get("serviceType") as string) || "",
+      message: (data.get("message") as string) || "",
+    });
+    if (result.ok) {
+      setStatus("success");
+      form.reset();
+    } else {
+      setStatus("error");
+      setErrorMessage(result.error);
+    }
+  };
+
   return (
     <div className="min-h-screen bg-background pt-24">
       <main className="pb-20">
@@ -104,37 +131,57 @@ export default function ContactPage() {
               <p className="text-sm text-muted-foreground mb-4">
                 Share a few details and we’ll get back with a callback or quote within a few working hours.
               </p>
-              <form className="space-y-4">
+              <form className="space-y-4" onSubmit={handleSubmit}>
+                {status === "success" && (
+                  <div className="flex items-center gap-2 rounded-xl bg-green-500/10 text-green-700 dark:text-green-400 px-4 py-3 text-sm">
+                    <CheckCircle className="h-5 w-5 shrink-0" />
+                    <span>Thanks! We&apos;ll get back to you within a few working hours.</span>
+                  </div>
+                )}
+                {status === "error" && (
+                  <div className="flex items-center gap-2 rounded-xl bg-destructive/10 text-destructive px-4 py-3 text-sm">
+                    <AlertCircle className="h-5 w-5 shrink-0" />
+                    <span>{errorMessage || "Something went wrong. Please try again or call us."}</span>
+                  </div>
+                )}
                 <div className="space-y-1">
-                  <label className="block text-xs font-medium text-muted-foreground">Name</label>
+                  <label className="block text-xs font-medium text-muted-foreground" htmlFor="contact-name">Name</label>
                   <input
+                    id="contact-name"
+                    name="name"
                     type="text"
+                    required
                     className="w-full rounded-xl bg-background border border-border/60 px-3 py-2 text-sm text-foreground placeholder:text-muted-foreground/60 focus:outline-none focus-visible:ring-2 focus-visible:ring-accent/60"
                     placeholder="Your full name"
                   />
                 </div>
                 <div className="space-y-1">
-                  <label className="block text-xs font-medium text-muted-foreground">Phone</label>
+                  <label className="block text-xs font-medium text-muted-foreground" htmlFor="contact-phone">Phone</label>
                   <input
+                    id="contact-phone"
+                    name="phone"
                     type="tel"
+                    required
                     className="w-full rounded-xl bg-background border border-border/60 px-3 py-2 text-sm text-foreground placeholder:text-muted-foreground/60 focus:outline-none focus-visible:ring-2 focus-visible:ring-accent/60"
                     placeholder="+91-XXXXXX"
                   />
                 </div>
                 <div className="space-y-1">
-                  <label className="block text-xs font-medium text-muted-foreground">Service Type</label>
-                  <select className="w-full rounded-xl bg-background border border-border/60 px-3 py-2 text-sm text-foreground focus:outline-none focus-visible:ring-2 focus-visible:ring-accent/60">
-                    <option>House Shifting Services</option>
-                    <option>Bike Shifting Services</option>
-                    <option>Packers and Movers Services</option>
-                    <option>Delivery Services</option>
-                    <option>Intra-City Delivery Service</option>
-                    <option>Outside City Services</option>
+                  <label className="block text-xs font-medium text-muted-foreground" htmlFor="contact-service">Service Type</label>
+                  <select id="contact-service" name="serviceType" className="w-full rounded-xl bg-background border border-border/60 px-3 py-2 text-sm text-foreground focus:outline-none focus-visible:ring-2 focus-visible:ring-accent/60">
+                    <option value="House Shifting Services">House Shifting Services</option>
+                    <option value="Bike Shifting Services">Bike Shifting Services</option>
+                    <option value="Packers and Movers Services">Packers and Movers Services</option>
+                    <option value="Delivery Services">Delivery Services</option>
+                    <option value="Intra-City Delivery Service">Intra-City Delivery Service</option>
+                    <option value="Outside City Services">Outside City Services</option>
                   </select>
                 </div>
                 <div className="space-y-1">
-                  <label className="block text-xs font-medium text-muted-foreground">Message</label>
+                  <label className="block text-xs font-medium text-muted-foreground" htmlFor="contact-message">Message</label>
                   <textarea
+                    id="contact-message"
+                    name="message"
                     rows={4}
                     className="w-full rounded-xl bg-background border border-border/60 px-3 py-2 text-sm text-foreground placeholder:text-muted-foreground/60 focus:outline-none focus-visible:ring-2 focus-visible:ring-accent/60 resize-none"
                     placeholder="Share pickup city, drop city, preferred date, and any special requirements."
@@ -142,9 +189,10 @@ export default function ContactPage() {
                 </div>
                 <button
                   type="submit"
-                  className="mt-2 inline-flex w-full items-center justify-center rounded-xl bg-accent px-4 py-2.5 text-sm font-semibold text-accent-foreground shadow-glow transition hover:bg-accent/90"
+                  disabled={status === "sending"}
+                  className="mt-2 inline-flex w-full items-center justify-center rounded-xl bg-accent px-4 py-2.5 text-sm font-semibold text-accent-foreground shadow-glow transition hover:bg-accent/90 disabled:opacity-70 disabled:cursor-not-allowed"
                 >
-                  Submit Enquiry
+                  {status === "sending" ? "Sending…" : "Submit Enquiry"}
                 </button>
               </form>
             </motion.div>

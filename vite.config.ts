@@ -9,6 +9,7 @@ export default defineConfig(({ mode }) => {
   const apiUrl = env.VITE_APP_WEBSITE_API_URL ?? "";
   const tawkPropertyId = env.VITE_TAWK_PROPERTY_ID ?? "";
   const tawkWidgetId = env.VITE_TAWK_WIDGET_ID ?? "";
+  const instagramUsername = env.VITE_INSTAGRAM_USERNAME ?? "";
 
   return {
     root: projectRoot,
@@ -17,6 +18,7 @@ export default defineConfig(({ mode }) => {
       "import.meta.env.VITE_APP_WEBSITE_API_URL": JSON.stringify(apiUrl),
       "import.meta.env.VITE_TAWK_PROPERTY_ID": JSON.stringify(tawkPropertyId),
       "import.meta.env.VITE_TAWK_WIDGET_ID": JSON.stringify(tawkWidgetId),
+      "import.meta.env.VITE_INSTAGRAM_USERNAME": JSON.stringify(instagramUsername),
     },
     server: {
       host: "::",

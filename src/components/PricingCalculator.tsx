@@ -1,12 +1,13 @@
 import { useState, useEffect } from "react";
 import { motion } from "framer-motion";
-import { Calculator, MapPin, Truck, Tag, ArrowRight } from "lucide-react";
+import { Calculator, MapPin, Truck, Tag, ArrowRight, CheckCircle, AlertCircle } from "lucide-react";
 import {
   fetchPricingAndOffers,
   getPerKmForServiceType,
   applyCouponToFare,
   type WebsiteOffer,
 } from "@/lib/websiteApi";
+import { submitToFormspree } from "@/lib/formspree";
 
 const serviceTypes = ["House Shifting Services", "Bike Shifting Services", "Delivery Services"] as const;
 
@@ -20,25 +21,22 @@ export default function PricingCalculator() {
   const [pickup, setPickup] = useState("");
   const [drop, setDrop] = useState("");
   const [service, setService] = useState<string>("");
-  const [distanceKm, setDistanceKm] = useState<string>("");
   const [coupon, setCoupon] = useState("");
   const [showResult, setShowResult] = useState(false);
   const [pricingAndOffers, setPricingAndOffers] = useState<Awaited<ReturnType<typeof fetchPricingAndOffers>>>(null);
+  const [callbackStatus, setCallbackStatus] = useState<"idle" | "sending" | "success" | "error">("idle");
+  const [callbackError, setCallbackError] = useState("");
 
   useEffect(() => {
     fetchPricingAndOffers().then(setPricingAndOffers);
   }, []);
 
   const handleEstimate = () => {
-    const dist = parseFloat(distanceKm);
-    if (service && (distanceKm === "" || (Number.isFinite(dist) && dist > 0))) {
-      setShowResult(true);
-    }
+    if (service) setShowResult(true);
   };
 
   const getEstimate = (): { low: string; high: string; appliedCoupon: WebsiteOffer | null } => {
-    const dist = parseFloat(distanceKm);
-    const distance = Number.isFinite(dist) && dist > 0 ? dist : 100;
+    const distance = 100; // indicative estimate (no distance field collected)
     const perKm = pricingAndOffers
       ? getPerKmForServiceType(pricingAndOffers.pricing, service)
       : null;
@@ -64,6 +62,26 @@ export default function PricingCalculator() {
 
   const result = showResult ? getEstimate() : null;
 
+  const handleCallbackSubmit = async (e: React.FormEvent<HTMLFormElement>) => {
+    e.preventDefault();
+    const form = e.currentTarget;
+    const data = new FormData(form);
+    setCallbackStatus("sending");
+    setCallbackError("");
+    const submitResult = await submitToFormspree({
+      _subject: "Pricing: Request Callback from website",
+      name: (data.get("callbackName") as string) || "",
+      phone: (data.get("callbackPhone") as string) || "",
+    });
+    if (submitResult.ok) {
+      setCallbackStatus("success");
+      form.reset();
+    } else {
+      setCallbackStatus("error");
+      setCallbackError(submitResult.error);
+    }
+  };
+
   return (
     <section id="pricing" className="py-1 lg:py-1">
       <div className="container mx-auto px-6">
@@ -80,7 +98,7 @@ export default function PricingCalculator() {
             Transparent <span className="text-gradient">Price Estimator</span>
           </h2>
           <p className="mt-4 text-muted-foreground text-lg">
-            Get an instant estimate based on distance. No hidden charges, no surprises.
+            Get an instant indicative estimate. No hidden charges, no surprises.
           </p>
         </motion.div>
 
@@ -98,7 +116,7 @@ export default function PricingCalculator() {
               </div>
               <div>
                 <h3 className="font-display text-lg font-bold text-primary-foreground">Price Calculator</h3>
-                <p className="text-xs text-primary-foreground/50">Distance-based estimate for your service</p>
+                <p className="text-xs text-primary-foreground/50">Indicative estimate for your service</p>
               </div>
             </div>
 
@@ -128,36 +146,20 @@ export default function PricingCalculator() {
                 </div>
               </div>
 
-              <div className="grid gap-5 sm:grid-cols-2">
-                <div className="space-y-1.5">
-                  <label className="text-xs font-medium text-muted-foreground flex items-center gap-1.5">
-                    <Truck className="h-3.5 w-3.5 text-accent" /> Service Type
-                  </label>
-                  <select
-                    value={service}
-                    onChange={(e) => setService(e.target.value)}
-                    className="w-full rounded-xl border border-border bg-secondary/50 px-4 py-3 text-sm text-foreground focus:outline-none focus:ring-2 focus:ring-accent/30 transition-all appearance-none"
-                  >
-                    <option value="">Select service</option>
-                    {serviceTypes.map((s) => (
-                      <option key={s} value={s}>{s}</option>
-                    ))}
-                  </select>
-                </div>
-                <div className="space-y-1.5">
-                  <label className="text-xs font-medium text-muted-foreground flex items-center gap-1.5">
-                    Distance (km)
-                  </label>
-                  <input
-                    type="number"
-                    min="1"
-                    step="1"
-                    value={distanceKm}
-                    onChange={(e) => setDistanceKm(e.target.value.replace(/[^0-9.]/g, ""))}
-                    placeholder="e.g. 100"
-                    className="w-full rounded-xl border border-border bg-secondary/50 px-4 py-3 text-sm text-foreground placeholder:text-muted-foreground/50 focus:outline-none focus:ring-2 focus:ring-accent/30 transition-all"
-                  />
-                </div>
+              <div className="space-y-1.5">
+                <label className="text-xs font-medium text-muted-foreground flex items-center gap-1.5">
+                  <Truck className="h-3.5 w-3.5 text-accent" /> Service Type
+                </label>
+                <select
+                  value={service}
+                  onChange={(e) => setService(e.target.value)}
+                  className="w-full rounded-xl border border-border bg-secondary/50 px-4 py-3 text-sm text-foreground focus:outline-none focus:ring-2 focus:ring-accent/30 transition-all appearance-none"
+                >
+                  <option value="">Select service</option>
+                  {serviceTypes.map((s) => (
+                    <option key={s} value={s}>{s}</option>
+                  ))}
+                </select>
               </div>
 
               <div className="space-y-1.5">
@@ -201,28 +203,49 @@ export default function PricingCalculator() {
                     </p>
                   )}
                   <p className="text-xs text-muted-foreground mt-2">
-                    Price is based on distance only. Final quote may vary with items, floor &amp; requirements.
+                    Price is indicative. Final quote may vary with items, floor &amp; requirements.
                   </p>
                 </div>
 
-                <div className="mt-6 space-y-3">
+                <form className="mt-6 space-y-3" onSubmit={handleCallbackSubmit}>
                   <p className="text-sm font-semibold text-foreground text-center">
                     Get an exact quote from our team
                   </p>
+                  {callbackStatus === "success" && (
+                    <div className="flex items-center gap-2 rounded-xl bg-green-500/10 text-green-700 dark:text-green-400 px-4 py-3 text-sm">
+                      <CheckCircle className="h-5 w-5 shrink-0" />
+                      <span>We&apos;ll call you back shortly.</span>
+                    </div>
+                  )}
+                  {callbackStatus === "error" && (
+                    <div className="flex items-center gap-2 rounded-xl bg-destructive/10 text-destructive px-4 py-3 text-sm">
+                      <AlertCircle className="h-5 w-5 shrink-0" />
+                      <span>{callbackError || "Something went wrong. Please try again."}</span>
+                    </div>
+                  )}
                   <div className="grid gap-3 sm:grid-cols-2">
                     <input
+                      name="callbackName"
                       placeholder="Your Name"
+                      required
                       className="w-full rounded-xl border border-border bg-secondary/50 px-4 py-3 text-sm text-foreground placeholder:text-muted-foreground/50 focus:outline-none focus:ring-2 focus:ring-accent/30 transition-all"
                     />
                     <input
+                      name="callbackPhone"
+                      type="tel"
                       placeholder="Phone Number"
+                      required
                       className="w-full rounded-xl border border-border bg-secondary/50 px-4 py-3 text-sm text-foreground placeholder:text-muted-foreground/50 focus:outline-none focus:ring-2 focus:ring-accent/30 transition-all"
                     />
                   </div>
-                  <button className="w-full rounded-xl bg-navy py-3.5 text-sm font-semibold text-primary-foreground transition-all hover:bg-navy-light">
-                    Request Callback
+                  <button
+                    type="submit"
+                    disabled={callbackStatus === "sending"}
+                    className="w-full rounded-xl bg-navy py-3.5 text-sm font-semibold text-primary-foreground transition-all hover:bg-navy-light disabled:opacity-70 disabled:cursor-not-allowed"
+                  >
+                    {callbackStatus === "sending" ? "Sending…" : "Request Callback"}
                   </button>
-                </div>
+                </form>
               </motion.div>
             )}
           </div>

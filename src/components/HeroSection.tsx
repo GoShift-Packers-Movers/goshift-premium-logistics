@@ -37,7 +37,7 @@ export default function HeroSection() {
               className="mb-6 inline-flex items-center gap-2 rounded-full glass-dark px-4 py-2 text-sm text-primary-foreground/80"
             >
               <span className="h-2 w-2 rounded-full bg-accent animate-pulse_glow" />
-              India's Fastest Growing Logistics Partner
+              Fastest Growing Logistics Partner
             </motion.div>
 
             <motion.h1
@@ -46,9 +46,9 @@ export default function HeroSection() {
               transition={{ duration: 0.6, delay: 0.1 }}
               className="text-4xl font-extrabold leading-tight text-primary-foreground sm:text-5xl lg:text-6xl xl:text-7xl"
             >
-              Move Smarter.
+              Seamless Shifting.
               <br />
-              <span className="text-gradient">Shift Faster.</span>
+              <span className="text-gradient">Every Time.</span>
             </motion.h1>
 
             <motion.p
@@ -75,12 +75,17 @@ export default function HeroSection() {
                 Get Free Estimate
                 <ArrowRight className="h-4 w-4 transition-transform group-hover:translate-x-1" />
               </Link>
-              <button className="group flex items-center gap-3 rounded-xl glass-dark px-6 py-4 text-base font-medium text-primary-foreground/90 transition-all hover:bg-primary-foreground/10">
+              <a
+                href="https://www.instagram.com/goshift"
+                target="_blank"
+                rel="noopener noreferrer"
+                className="group flex items-center gap-3 rounded-xl glass-dark px-6 py-4 text-base font-medium text-primary-foreground/90 transition-all hover:bg-primary-foreground/10"
+              >
                 <span className="flex h-10 w-10 items-center justify-center rounded-full bg-accent-gradient">
                   <Play className="h-4 w-4 text-accent-foreground ml-0.5" />
                 </span>
-                Watch How It Works
-              </button>
+                Watch Our Shifting Work
+              </a>
             </motion.div>
 
             {/* Trust metrics */}
