@@ -4,12 +4,17 @@ import { motion } from "framer-motion";
 import { useParams } from "react-router-dom";
 import { CheckCircle2, Truck, Clock, ShieldCheck } from "lucide-react";
 import { Seo } from "@/components/Seo";
+import houseHeroImg from "@/assets/House-1.jpeg";
+import houseGallery2Img from "@/assets/House-2.jpeg";
+import bikeHeroImg from "@/assets/Bike-1.jpeg";
+import bikeGallery2Img from "@/assets/Bike-2.jpeg";
+import bikeGallery3Img from "@/assets/Bike-3.jpeg";
+import bikeGallery4Img from "@/assets/Bike-4.jpeg";
 
 const serviceConfigs = {
   "house-shifting": {
     title: "House Shifting Services",
-    heroImage:
-      "https://images.pexels.com/photos/7464705/pexels-photo-7464705.jpeg?auto=compress&cs=tinysrgb&w=1600",
+    heroImage: houseHeroImg,
     tagline: "Complete house shifting with premium packing, organised loading and careful placement at destination.",
     howTitle: "How house shifting with GoShift works",
     howIntro:
@@ -38,16 +43,11 @@ const serviceConfigs = {
       "Crews trained to work with apartment associations and gated communities.",
       "Transparent pricing with clear inclusions and exclusions.",
     ],
-    gallery: [
-      "https://images.pexels.com/photos/7464705/pexels-photo-7464705.jpeg?auto=compress&cs=tinysrgb&w=1200",
-      "https://images.pexels.com/photos/7464704/pexels-photo-7464704.jpeg?auto=compress&cs=tinysrgb&w=1200",
-      "https://images.pexels.com/photos/7464703/pexels-photo-7464703.jpeg?auto=compress&cs=tinysrgb&w=1200",
-    ],
+    gallery: [houseHeroImg, houseGallery2Img, houseHeroImg],
   },
   "office-relocation": {
     title: "Bike Shifting Services",
-    heroImage:
-      "https://images.pexels.com/photos/1402787/pexels-photo-1402787.jpeg?auto=compress&cs=tinysrgb&w=1600",
+    heroImage: bikeHeroImg,
     tagline: "Two-wheeler relocation with doorstep pickup, protective packing and secure bike cradles.",
     howTitle: "How bike shifting with GoShift works",
     howIntro:
@@ -76,11 +76,7 @@ const serviceConfigs = {
       "Transit updates shared proactively by your move coordinator.",
       "Options for standard and premium protection based on bike value.",
     ],
-    gallery: [
-      "https://images.pexels.com/photos/1402787/pexels-photo-1402787.jpeg?auto=compress&cs=tinysrgb&w=1200",
-      "https://images.pexels.com/photos/593172/pexels-photo-593172.jpeg?auto=compress&cs=tinysrgb&w=1200",
-      "https://images.pexels.com/photos/1006104/pexels-photo-1006104.jpeg?auto=compress&cs=tinysrgb&w=1200",
-    ],
+    gallery: [bikeGallery2Img, bikeGallery3Img, bikeGallery4Img],
   },
   "vehicle-transport": {
     title: "Packers and Movers Services",
@@ -370,7 +366,7 @@ export default function ServiceDetailsPage() {
               <div className="grid gap-4 md:grid-cols-3">
                 {config.gallery.map((src, index) => (
                   <div
-                    key={src}
+                    key={`gallery-${index}`}
                     className="overflow-hidden rounded-2xl border border-border/60 bg-card shadow-card"
                   >
                     <img

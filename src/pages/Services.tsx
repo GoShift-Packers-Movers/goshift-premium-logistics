@@ -1,20 +1,20 @@
 import { motion } from "framer-motion";
 import { ArrowRight } from "lucide-react";
+import houseShiftingCardImg from "@/assets/House-1.jpeg";
+import bikeShiftingCardImg from "@/assets/Bike-1.jpeg";
 
 const services = [
   {
     id: "house-shifting",
     name: "House Shifting Services",
-    image:
-      "https://images.pexels.com/photos/7464705/pexels-photo-7464705.jpeg?auto=compress&cs=tinysrgb&w=1200",
+    image: houseShiftingCardImg,
     description:
       "Apartment and villa shifting with professional packing, careful loading and organised setup at your new home.",
   },
   {
     id: "office-relocation",
     name: "Bike Shifting Services",
-    image:
-      "https://images.pexels.com/photos/1005638/pexels-photo-1005638.jpeg?auto=compress&cs=tinysrgb&w=1200",
+    image: bikeShiftingCardImg,
     description:
       "Doorstep bike pickup, secure packing and transport with ramps and wheel chocks designed for two-wheelers.",
   },
