@@ -1,4 +1,4 @@
-import { Facebook, Instagram, Linkedin, Youtube, Mail, Phone, MapPin } from "lucide-react";
+import { Facebook, Instagram, Linkedin, Youtube, Mail, Phone, MapPin, Sparkles } from "lucide-react";
 import { Link } from "react-router-dom";
 import logo from "@/assets/logo.png";
 
@@ -154,12 +154,45 @@ export default function Footer() {
           </div>
         </div>
 
-        {/* Bottom */}
-        <div className="pt-8 pr-20 flex flex-col sm:flex-row items-center justify-between gap-4">
-          <p className="text-xs text-primary-foreground/60">
-            © 2026 GoShift. All rights reserved.
+        {/* Copyright · developed by · legal — one band, aligned baselines on large screens */}
+        <div className="grid grid-cols-1 gap-8 border-t border-primary-foreground/10 pt-10 pb-8 lg:grid-cols-[minmax(0,1fr)_auto_minmax(0,1fr)] lg:items-center lg:gap-6 xl:gap-8">
+          <p className="order-2 text-center text-xs leading-relaxed text-primary-foreground/60 lg:order-1 lg:text-left lg:self-center">
+            © {new Date().getFullYear()} GoShift. All rights reserved.
           </p>
-          <div className="flex flex-wrap gap-4">
+
+          <div className="order-1 flex justify-center lg:order-2 lg:self-center">
+            <a
+              href="https://navikxtechnologies.com"
+              target="_blank"
+              rel="noopener noreferrer"
+              className="group inline-flex max-w-full items-center gap-3 rounded-full border border-primary-foreground/20 bg-primary-foreground/[0.08] px-4 py-2.5 pl-2 shadow-sm backdrop-blur-sm transition-all hover:border-[#cba345]/50 hover:bg-primary-foreground/[0.12]"
+            >
+              <span
+                className="flex h-10 w-10 shrink-0 items-center justify-center rounded-full bg-[#cba345] text-sm font-bold tracking-tight text-white shadow-inner"
+                aria-hidden
+              >
+                NX
+              </span>
+              <span className="min-w-0 flex flex-col items-start text-left">
+                <span className="text-[10px] font-semibold uppercase tracking-[0.2em] text-primary-foreground/55">
+                  Developed by
+                </span>
+                <span className="text-sm font-bold text-primary-foreground group-hover:text-white">
+                  NavikX Technologies
+                </span>
+              </span>
+              <Sparkles
+                className="h-6 w-6 shrink-0 text-[#cba345] transition-transform group-hover:scale-110"
+                strokeWidth={1.75}
+                aria-hidden
+              />
+            </a>
+          </div>
+
+          <nav
+            className="order-3 flex flex-wrap items-center justify-center gap-x-4 gap-y-2 lg:justify-end lg:self-center"
+            aria-label="Legal"
+          >
             {legal.map((l) =>
               l === "Sitemap" ? (
                 <Link
@@ -187,7 +220,7 @@ export default function Footer() {
                 </Link>
               ),
             )}
-          </div>
+          </nav>
         </div>
       </div>
     </footer>
