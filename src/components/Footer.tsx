@@ -11,7 +11,14 @@ const services = [
   "Outside City Services",
 ];
 const cities = ["Chennai", "Coimbatore", "Tirunelveli", "Tiruchirappalli", "Theni"];
-const legal = ["Privacy Policy", "Terms of Service", "Refund Policy", "Cookie Policy", "Sitemap"];
+const legal = [
+  "Privacy Policy",
+  "Delete Account",
+  "Terms of Service",
+  "Refund Policy",
+  "Cookie Policy",
+  "Sitemap",
+];
 const socialColors = [
   "bg-[#1877F2] text-white hover:bg-[#1451b3]", // Facebook
   "bg-[#E1306C] text-white hover:bg-[#b32554]", // Instagram
@@ -208,6 +215,8 @@ export default function Footer() {
                   to={
                     l === "Privacy Policy"
                       ? "/privacy-policy"
+                      : l === "Delete Account"
+                      ? "/delete-account"
                       : l === "Terms of Service"
                       ? "/terms-of-service"
                       : l === "Refund Policy"

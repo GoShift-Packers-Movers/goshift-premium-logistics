@@ -21,6 +21,7 @@ import ContactPage from "./pages/Contact";
 import NotFound from "./pages/NotFound";
 import PricingPage from "./pages/Pricing";
 import PrivacyPolicyPage from "./pages/PrivacyPolicy";
+import DeleteAccountPage from "./pages/DeleteAccount";
 import TermsOfServicePage from "./pages/TermsOfService";
 import RefundPolicyPage from "./pages/RefundPolicy";
 import CookiePolicyPage from "./pages/CookiePolicy";
@@ -66,6 +67,7 @@ const App = () => (
                 <Route path="/offers" element={<OffersPage />} />
                 <Route path="/contact" element={<ContactPage />} />
                 <Route path="/privacy-policy" element={<PrivacyPolicyPage />} />
+                <Route path="/delete-account" element={<DeleteAccountPage />} />
                 <Route path="/terms-of-service" element={<TermsOfServicePage />} />
                 <Route path="/refund-policy" element={<RefundPolicyPage />} />
                 <Route path="/cookie-policy" element={<CookiePolicyPage />} />

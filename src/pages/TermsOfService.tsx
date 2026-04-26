@@ -1,3 +1,5 @@
+import { Link } from "react-router-dom";
+
 export default function TermsOfServicePage() {
   return (
     <div className="min-h-screen bg-background pt-24">
@@ -10,9 +12,11 @@ export default function TermsOfServicePage() {
             <h1 className="mt-4 text-3xl lg:text-4xl font-extrabold text-foreground">
               Terms of Service
             </h1>
-            <p className="mt-3 text-sm text-muted-foreground">
-              Last updated: February 2026
+            <p className="mt-3 text-base text-muted-foreground">
+              Terms and conditions for using GoShift customer app, driver app,
+              website, and related logistics services.
             </p>
+            <p className="mt-3 text-sm text-muted-foreground">Last updated: March 2026</p>
           </div>
 
           <div className="space-y-8">
@@ -21,25 +25,25 @@ export default function TermsOfServicePage() {
                 1. Acceptance of Terms
               </h2>
               <p className="text-sm leading-relaxed text-muted-foreground">
-                By accessing or using the GoShift website, mobile apps or any of our logistics
-                services, you agree to be bound by these Terms of Service. If you do not agree,
-                please do not use GoShift.
+                By accessing or using the GoShift website, customer app, driver app,
+                or any related services, you agree to be bound by these Terms of
+                Service. If you do not agree, please do not use GoShift.
               </p>
             </div>
 
             <div className="rounded-2xl bg-card border border-border/60 p-6 lg:p-8 shadow-sm space-y-4">
               <h2 className="text-lg font-semibold text-foreground">
-                2. Using GoShift
+                2. Eligibility &amp; account responsibilities
               </h2>
               <ul className="list-disc pl-5 space-y-2 text-sm text-muted-foreground">
-                <li>You must be at least 18 years old to create an account and place bookings.</li>
+                <li>You must be at least 18 years old to create an account and use our services.</li>
                 <li>
-                  You agree to provide accurate pickup/drop addresses, contact details and item
-                  descriptions so we can safely complete your move.
+                  You must provide accurate details for registration, bookings, deliveries,
+                  and driver onboarding (where applicable).
                 </li>
                 <li>
-                  You are responsible for keeping your account credentials confidential and for any
-                  activity that happens under your account.
+                  You are responsible for keeping your credentials secure and for all
+                  activity under your account.
                 </li>
               </ul>
             </div>
@@ -50,62 +54,145 @@ export default function TermsOfServicePage() {
               </h2>
               <ul className="list-disc pl-5 space-y-2 text-sm text-muted-foreground">
                 <li>
-                  Prices shown in the estimator are indicative and may vary based on actual items,
-                  floor access, distance, tolls and on-site assessment.
+                  Quotes/estimates are indicative and may vary based on actual load,
+                  access constraints, distance, tolls, waiting, and on-site conditions.
                 </li>
                 <li>
-                  Your booking is confirmed only after we share a confirmation via SMS, WhatsApp,
-                  email or in-app notification.
+                  A booking is confirmed only after confirmation is shared via app,
+                  call, SMS, WhatsApp, or email.
                 </li>
                 <li>
-                  Payments are processed via secure third-party gateways. By paying online you
-                  authorise us and our partners to process the transaction.
+                  Payments are processed through secure third-party partners. By paying
+                  online, you authorize transaction processing through these partners.
+                </li>
+                <li>
+                  Refund/cancellation timelines and conditions are governed by our{" "}
+                  <Link to="/refund-policy" className="text-accent hover:underline">
+                    Refund Policy
+                  </Link>
+                  .
                 </li>
               </ul>
             </div>
 
             <div className="rounded-2xl bg-card border border-border/60 p-6 lg:p-8 shadow-sm space-y-4">
               <h2 className="text-lg font-semibold text-foreground">
-                4. Prohibited Uses
+                4. Customer obligations
               </h2>
-              <p className="text-sm text-muted-foreground">
-                You agree not to misuse GoShift, including but not limited to:
-              </p>
               <ul className="list-disc pl-5 space-y-2 text-sm text-muted-foreground">
-                <li>Transporting illegal, hazardous or banned items.</li>
-                <li>Harassing staff, drivers or support teams.</li>
-                <li>Attempting to damage, overload or reverse-engineer our systems.</li>
+                <li>Provide accurate pickup/drop and contact details.</li>
+                <li>Do not submit prohibited, illegal, hazardous, or banned items.</li>
+                <li>Treat support staff, drivers, and partners respectfully.</li>
               </ul>
             </div>
 
             <div className="rounded-2xl bg-card border border-border/60 p-6 lg:p-8 shadow-sm space-y-4">
               <h2 className="text-lg font-semibold text-foreground">
-                5. Liability
+                5. Driver/partner obligations
+              </h2>
+              <ul className="list-disc pl-5 space-y-2 text-sm text-muted-foreground">
+                <li>Maintain valid documents required by law and platform policies.</li>
+                <li>Use the driver app only for legitimate service operations.</li>
+                <li>
+                  Maintain service standards, safety practices, and truthful status/location updates.
+                </li>
+              </ul>
+            </div>
+
+            <div className="rounded-2xl bg-card border border-border/60 p-6 lg:p-8 shadow-sm space-y-4">
+              <h2 className="text-lg font-semibold text-foreground">
+                6. Service availability, cancellation, and termination
               </h2>
               <p className="text-sm text-muted-foreground">
-                While we take extensive care to protect your belongings, certain risks are inherent
-                in any move. Our liability is limited to the extent permitted by applicable law and,
-                where applicable, to the coverage limits communicated in your booking.
+                Service availability may vary by location, demand, vehicle capacity,
+                weather, traffic, and operational constraints. We may cancel, reschedule,
+                suspend, or terminate services/accounts for fraud, abuse, repeated policy
+                violations, legal non-compliance, or safety concerns.
+              </p>
+              <p className="text-sm text-muted-foreground">
+                Users may request account deletion via in-app settings or from our{" "}
+                <Link to="/delete-account" className="text-accent hover:underline">
+                  Delete Account
+                </Link>{" "}
+                page.
               </p>
             </div>
 
             <div className="rounded-2xl bg-card border border-border/60 p-6 lg:p-8 shadow-sm space-y-4">
               <h2 className="text-lg font-semibold text-foreground">
-                6. Changes to These Terms
+                7. Prohibited uses
+              </h2>
+              <ul className="list-disc pl-5 space-y-2 text-sm text-muted-foreground">
+                <li>Transporting illegal, hazardous, or banned goods.</li>
+                <li>Misusing offers, wallets, payouts, pricing, or payment systems.</li>
+                <li>Harassment, threats, or abusive behavior toward users/staff/partners.</li>
+                <li>Attempting unauthorized access, scraping, reverse engineering, or system disruption.</li>
+              </ul>
+            </div>
+
+            <div className="rounded-2xl bg-card border border-border/60 p-6 lg:p-8 shadow-sm space-y-4">
+              <h2 className="text-lg font-semibold text-foreground">
+                8. Liability, indemnity, and disclaimers
               </h2>
               <p className="text-sm text-muted-foreground">
-                We may update these Terms from time to time to reflect changes to our services or
-                legal requirements. The updated version will always be available on this page and
-                will apply from the date it is posted.
+                To the maximum extent permitted by law, GoShift is not liable for
+                indirect, incidental, or consequential losses. Service disruptions,
+                delays, and external factors may occur. Where applicable, liability
+                is limited to the amount paid for the affected booking or the limits
+                communicated in the booking.
+              </p>
+              <p className="text-sm text-muted-foreground">
+                You agree to indemnify GoShift from claims arising from your misuse,
+                policy violations, illegal activity, or inaccurate declarations.
               </p>
             </div>
 
-            <div className="rounded-2xl bg-card border border-border/60 p-6 lg:p-8 shadow-sm space-y-3">
+            <div className="rounded-2xl bg-card border border-border/60 p-6 lg:p-8 shadow-sm space-y-4">
               <h2 className="text-lg font-semibold text-foreground">
-                7. Contact
+                9. Privacy and policy links
+              </h2>
+              <ul className="list-disc pl-5 space-y-2 text-sm text-muted-foreground">
+                <li>
+                  Personal data processing is governed by our{" "}
+                  <Link to="/privacy-policy" className="text-accent hover:underline">
+                    Privacy Policy
+                  </Link>
+                  .
+                </li>
+                <li>
+                  Cookies/local storage usage is covered in our{" "}
+                  <Link to="/cookie-policy" className="text-accent hover:underline">
+                    Cookie Policy
+                  </Link>
+                  .
+                </li>
+                <li>
+                  For account closure and data deletion requests, refer to{" "}
+                  <Link to="/delete-account" className="text-accent hover:underline">
+                    Delete Account
+                  </Link>
+                  .
+                </li>
+              </ul>
+            </div>
+
+            <div className="rounded-2xl bg-card border border-border/60 p-6 lg:p-8 shadow-sm space-y-4">
+              <h2 className="text-lg font-semibold text-foreground">
+                10. Governing law, dispute resolution, and updates
               </h2>
               <p className="text-sm text-muted-foreground">
-                For questions about these Terms of Service, you can reach us at{" "}
+                These Terms are governed by applicable Indian laws. Any disputes are
+                subject to the jurisdiction of courts in Madurai, Tamil Nadu, unless
+                otherwise required by law.
+              </p>
+              <p className="text-sm text-muted-foreground">
+                We may update these Terms from time to time. The updated version will
+                be posted on this page with a revised &quot;Last updated&quot; date.
+                Continued use of our services after updates means you accept the
+                revised Terms.
+              </p>
+              <p className="text-sm text-muted-foreground">
+                For terms-related questions, contact{" "}
                 <span className="font-medium text-foreground">hello@goshift.in</span>.
               </p>
             </div>
