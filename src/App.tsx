@@ -27,6 +27,7 @@ import RefundPolicyPage from "./pages/RefundPolicy";
 import CookiePolicyPage from "./pages/CookiePolicy";
 import ServiceCitySeoPage from "./pages/ServiceCitySeoPage";
 import SitemapPage from "./pages/SitemapPage";
+import AppsPage from "./pages/Apps";
 
 const ChatbotWidget = lazy(() => import("@/components/ChatbotWidget"));
 
@@ -66,6 +67,7 @@ const App = () => (
                 <Route path="/blog/:slug" element={<BlogPostPage />} />
                 <Route path="/offers" element={<OffersPage />} />
                 <Route path="/contact" element={<ContactPage />} />
+                <Route path="/apps" element={<AppsPage />} />
                 <Route path="/privacy-policy" element={<PrivacyPolicyPage />} />
                 <Route path="/delete-account" element={<DeleteAccountPage />} />
                 <Route path="/terms-of-service" element={<TermsOfServicePage />} />

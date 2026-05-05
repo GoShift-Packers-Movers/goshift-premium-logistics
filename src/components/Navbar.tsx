@@ -136,6 +136,14 @@ export default function Navbar() {
           })}
         </div>
 
+        <NavLink
+          to="/apps"
+          className="hidden items-center rounded-full border border-sky-300/70 bg-sky-100 px-5 py-2 text-sm font-semibold text-sky-900 transition-all hover:border-sky-400 hover:bg-sky-200 hover:shadow-sm lg:inline-flex"
+          activeClassName="border-sky-500 bg-sky-500 text-white shadow-glow"
+        >
+          Download Apps
+        </NavLink>
+
         {/* CTA */}
         <NavLink
           to="/pricing"
@@ -215,6 +223,14 @@ export default function Navbar() {
                   </div>
                 );
               })}
+              <NavLink
+                to="/apps"
+                onClick={() => setMobileOpen(false)}
+                className="block rounded-xl border border-sky-300/70 bg-sky-100 px-4 py-3 text-center text-sm font-semibold text-sky-900 transition-all hover:bg-sky-200"
+                activeClassName="border-sky-500 bg-sky-500 text-white shadow-glow"
+              >
+                Download Apps
+              </NavLink>
               <NavLink
                 to="/pricing"
                 onClick={() => setMobileOpen(false)}

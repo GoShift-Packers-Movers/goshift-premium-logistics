@@ -1,6 +1,8 @@
 import { Facebook, Instagram, Linkedin, Youtube, Mail, Phone, MapPin, Sparkles } from "lucide-react";
 import { Link } from "react-router-dom";
 import logo from "@/assets/logo.png";
+import { GooglePlayStoreButton } from "@/components/GooglePlayStoreButton";
+import { PLAY_STORE_CUSTOMER_APP, PLAY_STORE_DRIVER_APP } from "@/lib/playStoreLinks";
 
 const services = [
   "House Shifting Services",
@@ -64,6 +66,25 @@ export default function Footer() {
                   <Icon className="h-4 w-4" />
                 </a>
               ))}
+            </div>
+            <div className="mt-6 pt-5 border-t border-primary-foreground/10">
+              <p className="text-xs font-bold text-primary-foreground uppercase tracking-wide mb-2.5">
+                Download apps
+              </p>
+              <div className="flex flex-row flex-wrap items-start gap-3">
+                <GooglePlayStoreButton
+                  href={PLAY_STORE_CUSTOMER_APP}
+                  label="Customer app"
+                  variant="onDark"
+                  compact
+                />
+                <GooglePlayStoreButton
+                  href={PLAY_STORE_DRIVER_APP}
+                  label="Driver app"
+                  variant="onDark"
+                  compact
+                />
+              </div>
             </div>
           </div>
 

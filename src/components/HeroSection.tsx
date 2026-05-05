@@ -2,6 +2,8 @@ import { motion } from "framer-motion";
 import { ArrowRight, Play, Calculator, MapPin, Truck, Tag } from "lucide-react";
 import { Link } from "react-router-dom";
 import heroImage from "@/assets/hero-logistics.png";
+import { GooglePlayStoreButton } from "@/components/GooglePlayStoreButton";
+import { PLAY_STORE_CUSTOMER_APP, PLAY_STORE_DRIVER_APP } from "@/lib/playStoreLinks";
 
 export default function HeroSection() {
   return (
@@ -86,6 +88,29 @@ export default function HeroSection() {
                 </span>
                 Watch Our Shifting Work
               </a>
+            </motion.div>
+
+            <motion.div
+              initial={{ opacity: 0, y: 30 }}
+              animate={{ opacity: 1, y: 0 }}
+              transition={{ duration: 0.6, delay: 0.35 }}
+              className="mt-8 flex flex-col gap-3 sm:flex-row sm:items-center sm:flex-wrap"
+            >
+              <span className="text-[11px] font-semibold uppercase tracking-[0.2em] text-primary-foreground/55">
+                Mobile apps
+              </span>
+              <div className="flex flex-wrap gap-2">
+                <GooglePlayStoreButton
+                  href={PLAY_STORE_CUSTOMER_APP}
+                  label="Customer"
+                  variant="onDark"
+                />
+                <GooglePlayStoreButton
+                  href={PLAY_STORE_DRIVER_APP}
+                  label="Driver"
+                  variant="onDark"
+                />
+              </div>
             </motion.div>
 
             {/* Trust metrics */}

@@ -1,6 +1,8 @@
 import { motion } from "framer-motion";
 import { ArrowRight, Phone } from "lucide-react";
 import { Link } from "react-router-dom";
+import { GooglePlayStoreButton } from "@/components/GooglePlayStoreButton";
+import { PLAY_STORE_CUSTOMER_APP, PLAY_STORE_DRIVER_APP } from "@/lib/playStoreLinks";
 
 export default function CTASection() {
   return (
@@ -40,6 +42,18 @@ export default function CTASection() {
               <Phone className="h-4 w-4 text-accent" />
               1800-123-456
             </a>
+          </div>
+          <div className="mt-8 flex flex-wrap items-center justify-center gap-2">
+            <GooglePlayStoreButton
+              href={PLAY_STORE_CUSTOMER_APP}
+              label="Customer"
+              variant="onDark"
+            />
+            <GooglePlayStoreButton
+              href={PLAY_STORE_DRIVER_APP}
+              label="Driver"
+              variant="onDark"
+            />
           </div>
         </motion.div>
       </div>
