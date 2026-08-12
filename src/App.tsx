@@ -2,7 +2,7 @@ import { Toaster } from "@/components/ui/toaster";
 import { Toaster as Sonner } from "@/components/ui/sonner";
 import { TooltipProvider } from "@/components/ui/tooltip";
 import { QueryClient, QueryClientProvider } from "@tanstack/react-query";
-import { BrowserRouter, Routes, Route } from "react-router-dom";
+import { BrowserRouter, Routes, Route, useLocation } from "react-router-dom";
 import { Suspense, lazy } from "react";
 import Navbar from "@/components/Navbar";
 import Footer from "@/components/Footer";
@@ -34,6 +34,56 @@ const ChatbotWidget = lazy(() => import("@/components/ChatbotWidget"));
 
 const queryClient = new QueryClient();
 
+function AppShell() {
+  const location = useLocation();
+  const hideSiteChrome = location.pathname.startsWith("/shared-booking/");
+
+  return (
+    <div className="min-h-screen flex flex-col">
+      {!hideSiteChrome && <Navbar />}
+      <main className="flex-1 flex flex-col">
+        <Routes>
+          <Route path="/" element={<Index />} />
+          <Route path="/about" element={<AboutPage />} />
+          <Route path="/services" element={<ServicesPage />} />
+          <Route path="/services/:slug" element={<ServiceDetailsPage />} />
+          <Route path="/city/:citySlug" element={<CityServicePage />} />
+          <Route
+            path="/packers-movers-ahmedabad"
+            element={<ServiceCitySeoPage pageKey="packers-movers-ahmedabad" />}
+          />
+          <Route path="/mini-truck-mumbai" element={<ServiceCitySeoPage pageKey="mini-truck-mumbai" />} />
+          <Route
+            path="/intercity-transport-delhi"
+            element={<ServiceCitySeoPage pageKey="intercity-transport-delhi" />}
+          />
+          <Route path="/pricing" element={<PricingPage />} />
+          <Route path="/gallery" element={<GalleryPage />} />
+          <Route path="/blog" element={<BlogListPage />} />
+          <Route path="/blog/:slug" element={<BlogPostPage />} />
+          <Route path="/offers" element={<OffersPage />} />
+          <Route path="/contact" element={<ContactPage />} />
+          <Route path="/apps" element={<AppsPage />} />
+          <Route path="/shared-booking/:token" element={<SharedPackersBookingReview />} />
+          <Route path="/privacy-policy" element={<PrivacyPolicyPage />} />
+          <Route path="/delete-account" element={<DeleteAccountPage />} />
+          <Route path="/terms-of-service" element={<TermsOfServicePage />} />
+          <Route path="/refund-policy" element={<RefundPolicyPage />} />
+          <Route path="/cookie-policy" element={<CookiePolicyPage />} />
+          <Route path="/sitemap" element={<SitemapPage />} />
+          <Route path="*" element={<NotFound />} />
+        </Routes>
+      </main>
+      {!hideSiteChrome && <Footer />}
+      {!hideSiteChrome && (
+        <Suspense fallback={null}>
+          <ChatbotWidget />
+        </Suspense>
+      )}
+    </div>
+  );
+}
+
 const App = () => (
   <QueryClientProvider client={queryClient}>
     <TooltipProvider>
@@ -41,49 +91,7 @@ const App = () => (
       <Sonner />
       <BrowserRouter future={{ v7_startTransition: true, v7_relativeSplatPath: true }}>
         <ScrollToTop />
-        <div className="min-h-screen flex flex-col">
-          <Navbar />
-          <main className="flex-1 flex flex-col">
-            <Routes>
-                <Route path="/" element={<Index />} />
-                <Route path="/about" element={<AboutPage />} />
-                <Route path="/services" element={<ServicesPage />} />
-                <Route path="/services/:slug" element={<ServiceDetailsPage />} />
-                <Route path="/city/:citySlug" element={<CityServicePage />} />
-                <Route
-                  path="/packers-movers-ahmedabad"
-                  element={<ServiceCitySeoPage pageKey="packers-movers-ahmedabad" />}
-                />
-                <Route
-                  path="/mini-truck-mumbai"
-                  element={<ServiceCitySeoPage pageKey="mini-truck-mumbai" />}
-                />
-                <Route
-                  path="/intercity-transport-delhi"
-                  element={<ServiceCitySeoPage pageKey="intercity-transport-delhi" />}
-                />
-                <Route path="/pricing" element={<PricingPage />} />
-                <Route path="/gallery" element={<GalleryPage />} />
-                <Route path="/blog" element={<BlogListPage />} />
-                <Route path="/blog/:slug" element={<BlogPostPage />} />
-                <Route path="/offers" element={<OffersPage />} />
-                <Route path="/contact" element={<ContactPage />} />
-                <Route path="/apps" element={<AppsPage />} />
-                <Route path="/shared-booking/:token" element={<SharedPackersBookingReview />} />
-                <Route path="/privacy-policy" element={<PrivacyPolicyPage />} />
-                <Route path="/delete-account" element={<DeleteAccountPage />} />
-                <Route path="/terms-of-service" element={<TermsOfServicePage />} />
-                <Route path="/refund-policy" element={<RefundPolicyPage />} />
-                <Route path="/cookie-policy" element={<CookiePolicyPage />} />
-                <Route path="/sitemap" element={<SitemapPage />} />
-                <Route path="*" element={<NotFound />} />
-              </Routes>
-          </main>
-          <Footer />
-          <Suspense fallback={null}>
-            <ChatbotWidget />
-          </Suspense>
-        </div>
+        <AppShell />
       </BrowserRouter>
     </TooltipProvider>
   </QueryClientProvider>

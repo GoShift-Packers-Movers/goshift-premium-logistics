@@ -114,19 +114,38 @@ declare global {
 export function loadRazorpayScript(): Promise<void> {
   if (window.Razorpay) return Promise.resolve();
   return new Promise((resolve, reject) => {
-    const existing = document.querySelector('script[src="https://checkout.razorpay.com/v1/checkout.js"]');
+    const existing = document.querySelector(
+      'script[src="https://checkout.razorpay.com/v1/checkout.js"]',
+    ) as HTMLScriptElement | null;
     if (existing) {
-      existing.addEventListener("load", () => resolve());
+      if (existing.dataset.loaded === "true" && window.Razorpay) {
+        resolve();
+        return;
+      }
+      existing.addEventListener("load", () => {
+        existing.dataset.loaded = "true";
+        resolve();
+      });
       existing.addEventListener("error", () => reject(new Error("Razorpay script failed")));
       return;
     }
     const script = document.createElement("script");
     script.src = "https://checkout.razorpay.com/v1/checkout.js";
     script.async = true;
-    script.onload = () => resolve();
+    script.onload = () => {
+      script.dataset.loaded = "true";
+      resolve();
+    };
     script.onerror = () => reject(new Error("Razorpay script failed"));
     document.body.appendChild(script);
   });
+}
+
+export class PaymentCancelledError extends Error {
+  constructor() {
+    super("Payment cancelled");
+    this.name = "PaymentCancelledError";
+  }
 }
 
 export function openRazorpayCheckout(options: {
@@ -161,14 +180,20 @@ export function openRazorpayCheckout(options: {
         contact: options.contact,
       },
       theme: { color: "#2563EB" },
+      retry: { enabled: true, max_count: 3 },
       handler: (response: {
         razorpay_order_id: string;
         razorpay_payment_id: string;
         razorpay_signature: string;
       }) => resolve(response),
       modal: {
-        ondismiss: () => reject(new Error("Payment cancelled")),
+        confirm_close: true,
+        ondismiss: () => reject(new PaymentCancelledError()),
       },
+    });
+    rzp.on("payment.failed", (response: { error?: { description?: string } }) => {
+      const msg = response?.error?.description?.trim();
+      reject(new Error(msg || "Payment failed. Please try again."));
     });
     rzp.open();
   });
