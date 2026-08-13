@@ -3,10 +3,11 @@ import { useParams } from "react-router-dom";
 import logo from "@/assets/logo.png";
 import {
   coerceNum,
-  completeSharedPackersPayment,
+  completeSharedPackersPaymentWithRetry,
   createSharedPackersPaymentOrder,
   fetchSharedPackersBooking,
   formatRupee,
+  formatRazorpayContact,
   loadRazorpayScript,
   openRazorpayCheckout,
   PaymentCancelledError,
@@ -25,6 +26,9 @@ const TIME_SLOTS: Record<(typeof TIME_PERIODS)[number], string[]> = {
   Afternoon: ["2:00 PM - 3:00 PM", "4:00 PM - 5:00 PM"],
   Evening: ["6:00 PM - 7:00 PM"],
 };
+
+const SHARED_BOOKING_SUCCESS_MESSAGE =
+  "Order confirmed successfully. Please check the GoShift app — your order will be updated shortly.";
 
 const PACKING_STYLE_LABELS: Record<string, string> = {
   elite_multi: "Elite Packing",
@@ -290,12 +294,16 @@ export default function SharedPackersBookingReview() {
       const v = coerceNum(booking[key]);
       if (v !== 0) lines.push({ label, value: v, discount });
     };
-    push("Base price", "basePrice");
+    const mergedCorePrice =
+      coerceNum(booking.basePrice) +
+      coerceNum(booking.packingPrice) +
+      coerceNum(booking.distanceCharge);
+    if (mergedCorePrice !== 0) {
+      lines.push({ label: "Price", value: mergedCorePrice });
+    }
     push("Items price", "itemsPrice");
-    push("Packing price", "packingPrice");
     push("Add-on services", "addOnServicesPrice");
     push("Extra pickup charge", "extraPickupCharge");
-    push("Distance charge", "distanceCharge");
     push("Peak hours surcharge", "peakHoursSurcharge");
     push("Night charges", "nightChargesSurcharge");
     push("Risk location surcharge", "riskLocationSurcharge");
@@ -358,6 +366,9 @@ export default function SharedPackersBookingReview() {
       });
 
       setPayPhase("checkout");
+      const razorpayContact = formatRazorpayContact(
+        data.isAdminShare ? phone.trim() : phone,
+      );
       const checkout = await openRazorpayCheckout({
         key: orderPayload.razorpayKeyId,
         amount: orderPayload.amount,
@@ -365,7 +376,7 @@ export default function SharedPackersBookingReview() {
         orderId: orderPayload.razorpayOrderId,
         name: data.isAdminShare ? name.trim() : name,
         email: data.isAdminShare ? email.trim() : email,
-        contact: data.isAdminShare ? phone.trim() : phone,
+        contact: razorpayContact,
         description:
           data.paymentDueLabel === "full"
             ? "Bike shifting — full payment"
@@ -373,7 +384,7 @@ export default function SharedPackersBookingReview() {
       });
 
       setPayPhase("verifying");
-      const completed = await completeSharedPackersPayment({
+      const completed = await completeSharedPackersPaymentWithRetry({
         token: data.shareToken,
         razorpayOrderId: checkout.razorpay_order_id,
         razorpayPaymentId: checkout.razorpay_payment_id,
@@ -382,9 +393,7 @@ export default function SharedPackersBookingReview() {
 
       setSuccess({
         orderId: completed.orderId,
-        message:
-          completed.message ||
-          "Booking confirmed. Please open the GoShift customer app to view your order details.",
+        message: completed.message || SHARED_BOOKING_SUCCESS_MESSAGE,
       });
     } catch (e) {
       if (e instanceof PaymentCancelledError) {

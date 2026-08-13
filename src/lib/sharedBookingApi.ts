@@ -102,6 +102,34 @@ export async function completeSharedPackersPayment(
   return body as CompleteSharedPaymentResponse;
 }
 
+/** Retry completion after Razorpay success (network blips must not leave paid shares pending). */
+export async function completeSharedPackersPaymentWithRetry(
+  payload: CompleteSharedPaymentRequest,
+  maxAttempts = 3,
+): Promise<CompleteSharedPaymentResponse> {
+  let lastError: Error | null = null;
+  for (let attempt = 0; attempt < maxAttempts; attempt += 1) {
+    try {
+      return await completeSharedPackersPayment(payload);
+    } catch (e) {
+      lastError = e instanceof Error ? e : new Error("Payment verification failed");
+      if (attempt < maxAttempts - 1) {
+        await new Promise((resolve) => setTimeout(resolve, 1500 * (attempt + 1)));
+      }
+    }
+  }
+  throw lastError ?? new Error("Payment verification failed");
+}
+
+/** Razorpay prefill.contact expects E.164 for reliable Indian numbers. */
+export function formatRazorpayContact(phoneRaw: string): string {
+  const digits = phoneRaw.replace(/\D/g, "");
+  if (digits.length < 10) return phoneRaw.trim();
+  const last10 = digits.slice(-10);
+  if (!/^[6-9]\d{9}$/.test(last10)) return phoneRaw.trim();
+  return `+91${last10}`;
+}
+
 declare global {
   interface Window {
     Razorpay?: new (options: Record<string, unknown>) => {
