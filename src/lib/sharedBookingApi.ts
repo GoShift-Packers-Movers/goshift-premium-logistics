@@ -26,6 +26,8 @@ export interface SharedPackersBookingResponse {
   personalDetails: SharedBookingPersonalDetails | null;
   orderId: string;
   razorpayKeyId: string;
+  fulfillmentPending?: boolean;
+  completedOrderId?: string | null;
 }
 
 export async function fetchSharedPackersBooking(
@@ -50,11 +52,16 @@ export interface CreateSharedPaymentOrderRequest {
 }
 
 export interface CreateSharedPaymentOrderResponse {
-  razorpayOrderId: string;
-  amount: number;
-  currency: string;
-  razorpayKeyId: string;
-  shareToken: string;
+  razorpayOrderId?: string;
+  amount?: number;
+  currency?: string;
+  razorpayKeyId?: string;
+  shareToken?: string;
+  alreadyPaid?: boolean;
+  orderId?: string;
+  userId?: string;
+  message?: string;
+  reusedPendingOrder?: boolean;
 }
 
 export async function createSharedPackersPaymentOrder(
@@ -105,20 +112,49 @@ export async function completeSharedPackersPayment(
 /** Retry completion after Razorpay success (network blips must not leave paid shares pending). */
 export async function completeSharedPackersPaymentWithRetry(
   payload: CompleteSharedPaymentRequest,
-  maxAttempts = 3,
+  maxAttempts = 8,
+  onVerifyAttempt?: (attempt: number) => void,
 ): Promise<CompleteSharedPaymentResponse> {
   let lastError: Error | null = null;
   for (let attempt = 0; attempt < maxAttempts; attempt += 1) {
+    onVerifyAttempt?.(attempt + 1);
     try {
       return await completeSharedPackersPayment(payload);
     } catch (e) {
       lastError = e instanceof Error ? e : new Error("Payment verification failed");
+      try {
+        const recovered = await retrySharedPackersBookingFulfillment(payload.token);
+        if (recovered.success) return recovered;
+      } catch {
+        /* continue primary retries */
+      }
       if (attempt < maxAttempts - 1) {
-        await new Promise((resolve) => setTimeout(resolve, 1500 * (attempt + 1)));
+        await new Promise((resolve) => setTimeout(resolve, 2000 * (attempt + 1)));
       }
     }
   }
+  try {
+    const recovered = await retrySharedPackersBookingFulfillment(payload.token);
+    if (recovered.success) return recovered;
+  } catch {
+    /* fall through */
+  }
   throw lastError ?? new Error("Payment verification failed");
+}
+
+export async function retrySharedPackersBookingFulfillment(
+  token: string,
+): Promise<CompleteSharedPaymentResponse> {
+  const res = await fetch(apiUrl("/retrySharedPackersBookingFulfillment"), {
+    method: "POST",
+    headers: { "Content-Type": "application/json" },
+    body: JSON.stringify({ token }),
+  });
+  const body = await res.json().catch(() => ({}));
+  if (!res.ok) {
+    throw new Error((body as { error?: string }).error || "Could not confirm booking");
+  }
+  return body as CompleteSharedPaymentResponse;
 }
 
 /** Razorpay prefill.contact expects E.164 for reliable Indian numbers. */

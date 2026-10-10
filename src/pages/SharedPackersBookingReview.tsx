@@ -1,4 +1,11 @@
-import { useCallback, useEffect, useMemo, useState } from "react";
+import {
+  useCallback,
+  useEffect,
+  useMemo,
+  useState,
+  type Dispatch,
+  type SetStateAction,
+} from "react";
 import { useParams } from "react-router-dom";
 import logo from "@/assets/logo.png";
 import {
@@ -6,6 +13,7 @@ import {
   completeSharedPackersPaymentWithRetry,
   createSharedPackersPaymentOrder,
   fetchSharedPackersBooking,
+  retrySharedPackersBookingFulfillment,
   formatRupee,
   formatRazorpayContact,
   loadRazorpayScript,
@@ -29,6 +37,154 @@ const TIME_SLOTS: Record<(typeof TIME_PERIODS)[number], string[]> = {
 
 const SHARED_BOOKING_SUCCESS_MESSAGE =
   "Order confirmed successfully. Please check the GoShift app — your order will be updated shortly.";
+
+type StepStatus = "pending" | "active" | "done" | "error";
+
+type FulfillmentProgress = {
+  payment: StepStatus;
+  verify: StepStatus;
+  customer: StepStatus;
+  order: StepStatus;
+  userId?: string;
+};
+
+function sleep(ms: number): Promise<void> {
+  return new Promise((resolve) => setTimeout(resolve, ms));
+}
+
+function FulfillmentStepper({
+  progress,
+  isAdminShare,
+  onRetry,
+  retrying,
+}: {
+  progress: FulfillmentProgress;
+  isAdminShare: boolean;
+  onRetry?: () => void;
+  retrying?: boolean;
+}) {
+  const steps: { key: keyof FulfillmentProgress; label: string }[] = [
+    { key: "payment", label: "Payment received" },
+    { key: "verify", label: "Payment verified with GoShift" },
+    {
+      key: "customer",
+      label: isAdminShare ? "Customer account created" : "Account linked",
+    },
+    { key: "order", label: "Booking order created" },
+  ];
+
+  return (
+    <div className="mx-auto w-full max-w-lg space-y-4">
+      <div
+        className="rounded-2xl border-2 border-amber-500 bg-amber-50 px-5 py-5 shadow-md"
+        role="alert"
+      >
+        <p className="text-center text-base font-extrabold uppercase tracking-wide text-amber-950 sm:text-lg">
+          Do not close this tab
+        </p>
+        <p className="mt-3 text-center text-sm font-semibold leading-relaxed text-amber-950 sm:text-base">
+          Your payment is being confirmed. Closing or refreshing this page before all steps finish
+          can delay your booking in the app and admin panel.
+        </p>
+      </div>
+
+      <div className="rounded-2xl border border-blue-200 bg-white p-6 shadow-lg">
+      <h2 className="text-center text-lg font-bold text-slate-900">Confirming your booking</h2>
+      <p className="mt-2 text-center text-sm text-slate-600">
+        Wait until every step below shows a green checkmark.
+      </p>
+      <ol className="mt-6 space-y-4">
+        {steps.map(({ key, label }, index) => {
+          const status = progress[key] as StepStatus;
+          const isDone = status === "done";
+          const isActive = status === "active";
+          const isError = status === "error";
+          return (
+            <li key={key} className="flex items-start gap-3">
+              <div
+                className={`mt-0.5 flex h-8 w-8 shrink-0 items-center justify-center rounded-full text-sm font-bold ${
+                  isDone
+                    ? "bg-green-600 text-white"
+                    : isError
+                      ? "bg-red-100 text-red-700"
+                      : isActive
+                        ? "bg-blue-600 text-white"
+                        : "bg-slate-100 text-slate-400"
+                }`}
+              >
+                {isDone ? "✓" : isError ? "!" : index + 1}
+              </div>
+              <div className="min-w-0 flex-1 pt-1">
+                <p
+                  className={`text-sm font-semibold ${
+                    isDone ? "text-green-800" : isError ? "text-red-800" : "text-slate-800"
+                  }`}
+                >
+                  {label}
+                </p>
+                {isDone && key === "customer" && progress.userId && isAdminShare && (
+                  <p className="mt-0.5 truncate text-xs text-slate-500">ID: {progress.userId}</p>
+                )}
+                {isDone && key === "order" && (
+                  <p className="mt-0.5 text-xs text-green-700">Completed successfully</p>
+                )}
+                {isActive && (
+                  <p className="mt-0.5 text-xs text-blue-600">In progress…</p>
+                )}
+                {isError && (
+                  <p className="mt-0.5 text-xs text-red-600">Retrying — do not close this page</p>
+                )}
+              </div>
+              {isActive && (
+                <div
+                  className="mt-2 h-5 w-5 shrink-0 animate-spin rounded-full border-2 border-blue-200 border-t-blue-600"
+                  aria-hidden
+                />
+              )}
+            </li>
+          );
+        })}
+      </ol>
+      {progress.verify === "error" && onRetry && (
+        <button
+          type="button"
+          onClick={() => onRetry()}
+          disabled={retrying}
+          className="mt-6 w-full rounded-xl bg-blue-600 py-3 text-sm font-bold text-white disabled:opacity-60"
+        >
+          {retrying ? "Retrying…" : "Retry confirmation"}
+        </button>
+      )}
+      </div>
+    </div>
+  );
+}
+
+async function advanceFulfillmentSteps(
+  setFulfillment: Dispatch<SetStateAction<FulfillmentProgress | null>>,
+  completed: { orderId: string; userId?: string },
+  isAdminShare: boolean,
+): Promise<void> {
+  setFulfillment((prev) =>
+    prev
+      ? { ...prev, verify: "done", customer: isAdminShare ? "active" : "done", order: "pending" }
+      : null,
+  );
+  await sleep(isAdminShare ? 450 : 200);
+  setFulfillment((prev) =>
+    prev
+      ? {
+          ...prev,
+          customer: "done",
+          userId: completed.userId,
+          order: "active",
+        }
+      : null,
+  );
+  await sleep(450);
+  setFulfillment((prev) => (prev ? { ...prev, order: "done" } : null));
+  await sleep(350);
+}
 
 const PACKING_STYLE_LABELS: Record<string, string> = {
   elite_multi: "Elite Packing",
@@ -226,6 +382,39 @@ export default function SharedPackersBookingReview() {
   const [paying, setPaying] = useState(false);
   const [payPhase, setPayPhase] = useState<"idle" | "preparing" | "checkout" | "verifying">("idle");
   const [success, setSuccess] = useState<{ orderId: string; message: string } | null>(null);
+  const [fulfillment, setFulfillment] = useState<FulfillmentProgress | null>(null);
+  const [fulfillmentRetrying, setFulfillmentRetrying] = useState(false);
+
+  const retryFulfillmentFromStepper = useCallback(async () => {
+    if (!token || !data) return;
+    setFulfillmentRetrying(true);
+    setError(null);
+    setFulfillment((prev) =>
+      prev
+        ? { ...prev, verify: "active", customer: "pending", order: "pending" }
+        : {
+            payment: "done",
+            verify: "active",
+            customer: "pending",
+            order: "pending",
+          },
+    );
+    try {
+      const recovered = await retrySharedPackersBookingFulfillment(token);
+      await advanceFulfillmentSteps(setFulfillment, recovered, data.isAdminShare);
+      setSuccess({
+        orderId: recovered.orderId,
+        message: recovered.message || SHARED_BOOKING_SUCCESS_MESSAGE,
+      });
+    } catch (e) {
+      setFulfillment((prev) => (prev ? { ...prev, verify: "error" } : prev));
+      setPaymentNotice(
+        e instanceof Error ? e.message : "Still confirming — please try again in a moment.",
+      );
+    } finally {
+      setFulfillmentRetrying(false);
+    }
+  }, [token, data]);
 
   const [selectedDate, setSelectedDate] = useState<Date | null>(null);
   const [timeSlot, setTimeSlot] = useState("");
@@ -249,6 +438,32 @@ export default function SharedPackersBookingReview() {
       setLoading(true);
       setError(null);
       const res = await fetchSharedPackersBooking(token);
+      if (res.fulfillmentPending) {
+        setData(res);
+        setFulfillment({
+          payment: "done",
+          verify: "active",
+          customer: "pending",
+          order: "pending",
+        });
+        try {
+          const recovered = await retrySharedPackersBookingFulfillment(token);
+          await advanceFulfillmentSteps(setFulfillment, recovered, res.isAdminShare);
+          setSuccess({
+            orderId: recovered.orderId,
+            message: recovered.message || SHARED_BOOKING_SUCCESS_MESSAGE,
+          });
+          setData({ ...res, fulfillmentPending: false });
+          return;
+        } catch {
+          setFulfillment((prev) =>
+            prev ? { ...prev, verify: "error" } : prev,
+          );
+          setPaymentNotice(
+            "Payment received — confirming your booking. Please keep this page open.",
+          );
+        }
+      }
       setData(res);
       const bd = res.bookingData;
       const sched = coerceNum(bd.scheduledDate);
@@ -365,6 +580,34 @@ export default function SharedPackersBookingReview() {
           : {}),
       });
 
+      if (orderPayload.alreadyPaid && orderPayload.orderId) {
+        setFulfillment({
+          payment: "done",
+          verify: "done",
+          customer: data.isAdminShare ? "done" : "done",
+          order: "active",
+          userId: orderPayload.userId,
+        });
+        await advanceFulfillmentSteps(
+          setFulfillment,
+          { orderId: orderPayload.orderId, userId: orderPayload.userId },
+          data.isAdminShare,
+        );
+        setSuccess({
+          orderId: orderPayload.orderId,
+          message: orderPayload.message || SHARED_BOOKING_SUCCESS_MESSAGE,
+        });
+        return;
+      }
+
+      if (
+        !orderPayload.razorpayOrderId ||
+        orderPayload.amount == null ||
+        !orderPayload.razorpayKeyId
+      ) {
+        throw new Error("Could not start payment. Please try again.");
+      }
+
       setPayPhase("checkout");
       const razorpayContact = formatRazorpayContact(
         data.isAdminShare ? phone.trim() : phone,
@@ -372,7 +615,7 @@ export default function SharedPackersBookingReview() {
       const checkout = await openRazorpayCheckout({
         key: orderPayload.razorpayKeyId,
         amount: orderPayload.amount,
-        currency: orderPayload.currency,
+        currency: orderPayload.currency || "INR",
         orderId: orderPayload.razorpayOrderId,
         name: data.isAdminShare ? name.trim() : name,
         email: data.isAdminShare ? email.trim() : email,
@@ -383,13 +626,29 @@ export default function SharedPackersBookingReview() {
             : "House shifting — advance payment",
       });
 
-      setPayPhase("verifying");
-      const completed = await completeSharedPackersPaymentWithRetry({
-        token: data.shareToken,
-        razorpayOrderId: checkout.razorpay_order_id,
-        razorpayPaymentId: checkout.razorpay_payment_id,
-        razorpaySignature: checkout.razorpay_signature,
+      setFulfillment({
+        payment: "done",
+        verify: "active",
+        customer: "pending",
+        order: "pending",
       });
+      setPayPhase("verifying");
+      const completed = await completeSharedPackersPaymentWithRetry(
+        {
+          token: data.shareToken,
+          razorpayOrderId: checkout.razorpay_order_id,
+          razorpayPaymentId: checkout.razorpay_payment_id,
+          razorpaySignature: checkout.razorpay_signature,
+        },
+        8,
+        () => {
+          setFulfillment((prev) =>
+            prev ? { ...prev, verify: "active", customer: "pending", order: "pending" } : prev,
+          );
+        },
+      );
+
+      await advanceFulfillmentSteps(setFulfillment, completed, data.isAdminShare);
 
       setSuccess({
         orderId: completed.orderId,
@@ -397,10 +656,38 @@ export default function SharedPackersBookingReview() {
       });
     } catch (e) {
       if (e instanceof PaymentCancelledError) {
+        setFulfillment(null);
         setPaymentNotice("Payment was cancelled. You can try again when ready.");
         setError(null);
       } else {
-        setError(e instanceof Error ? e.message : "Payment failed");
+        const msg = e instanceof Error ? e.message : "Payment failed";
+        setFulfillment((prev) =>
+          prev
+            ? { ...prev, verify: "error", customer: "pending", order: "pending" }
+            : {
+                payment: "done",
+                verify: "error",
+                customer: "pending",
+                order: "pending",
+              },
+        );
+        try {
+          setFulfillment((prev) =>
+            prev ? { ...prev, verify: "active" } : prev,
+          );
+          const recovered = await retrySharedPackersBookingFulfillment(data.shareToken);
+          await advanceFulfillmentSteps(setFulfillment, recovered, data.isAdminShare);
+          setSuccess({
+            orderId: recovered.orderId,
+            message: recovered.message || SHARED_BOOKING_SUCCESS_MESSAGE,
+          });
+          setError(null);
+        } catch {
+          setError(msg);
+          setPaymentNotice(
+            "If payment was deducted, keep this page open — we are confirming your booking.",
+          );
+        }
       }
     } finally {
       setPaying(false);
@@ -431,13 +718,45 @@ export default function SharedPackersBookingReview() {
   if (success) {
     return (
       <div className="min-h-screen bg-[#EFF6FF]">
-        <div className="mx-auto max-w-lg px-4 py-16 text-center">
-          <div className="rounded-2xl border border-green-200 bg-green-50 p-8">
-            <h1 className="text-xl font-bold text-green-800">Payment successful</h1>
-            <p className="mt-3 text-sm text-green-900">{success.message}</p>
+        <div className="mx-auto max-w-lg px-4 py-16">
+          <div className="rounded-2xl border border-green-200 bg-green-50 p-8 text-center">
+            <h1 className="text-xl font-bold text-green-800">All steps completed</h1>
+            <ul className="mt-4 space-y-2 text-left text-sm text-green-900">
+              <li className="flex gap-2">
+                <span className="font-bold text-green-700">✓</span> Payment received
+              </li>
+              <li className="flex gap-2">
+                <span className="font-bold text-green-700">✓</span> Payment verified
+              </li>
+              <li className="flex gap-2">
+                <span className="font-bold text-green-700">✓</span>{" "}
+                {data?.isAdminShare ? "Customer account ready" : "Account linked"}
+              </li>
+              <li className="flex gap-2">
+                <span className="font-bold text-green-700">✓</span> Booking order created
+              </li>
+            </ul>
+            <p className="mt-4 text-sm text-green-900">{success.message}</p>
             <p className="mt-4 text-sm font-semibold text-slate-700">Order ID: {success.orderId}</p>
           </div>
         </div>
+      </div>
+    );
+  }
+
+  if (
+    fulfillment &&
+    !success &&
+    (paying || payPhase === "verifying" || fulfillment.payment === "done")
+  ) {
+    return (
+      <div className="flex min-h-screen items-center justify-center bg-[#EFF6FF] px-4 py-10">
+        <FulfillmentStepper
+          progress={fulfillment}
+          isAdminShare={data?.isAdminShare ?? false}
+          onRetry={retryFulfillmentFromStepper}
+          retrying={fulfillmentRetrying}
+        />
       </div>
     );
   }
