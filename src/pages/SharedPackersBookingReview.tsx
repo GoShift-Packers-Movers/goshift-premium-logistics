@@ -801,9 +801,6 @@ export default function SharedPackersBookingReview() {
             label="Date & time"
             value={`${String(booking.scheduledDateFormatted || "—")} · ${String(booking.timeSlot || "—")}`}
           />
-          {coerceNum(booking.distanceKm) > 0 && (
-            <Row label="Distance" value={`${coerceNum(booking.distanceKm).toFixed(2)} km`} />
-          )}
           <div className="mt-3 border-t border-slate-100 pt-3">
             <p className="text-xs font-semibold text-green-700">Pickup</p>
             <p className="text-sm text-slate-800">{String(booking.pickupAddress || "—")}</p>
