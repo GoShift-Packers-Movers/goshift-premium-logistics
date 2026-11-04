@@ -8,6 +8,7 @@ import {
 } from "react";
 import { useParams } from "react-router-dom";
 import logo from "@/assets/logo.png";
+import SharedBookingItemsEditor from "@/components/SharedBookingItemsEditor";
 import {
   coerceNum,
   completeSharedPackersPaymentWithRetry,
@@ -20,6 +21,7 @@ import {
   openRazorpayCheckout,
   PaymentCancelledError,
   type SharedPackersBookingResponse,
+  type UpdateSharedItemsResponse,
 } from "@/lib/sharedBookingApi";
 
 const WEEKDAYS = ["Mon", "Tue", "Wed", "Thu", "Fri", "Sat", "Sun"] as const;
@@ -384,6 +386,22 @@ export default function SharedPackersBookingReview() {
   const [success, setSuccess] = useState<{ orderId: string; message: string } | null>(null);
   const [fulfillment, setFulfillment] = useState<FulfillmentProgress | null>(null);
   const [fulfillmentRetrying, setFulfillmentRetrying] = useState(false);
+  const [editingItems, setEditingItems] = useState(false);
+  const [itemsPreview, setItemsPreview] = useState<UpdateSharedItemsResponse | null>(null);
+
+  const handleItemsSaved = useCallback((saved: UpdateSharedItemsResponse) => {
+    setItemsPreview(null);
+    setData((prev) =>
+      prev
+        ? {
+            ...prev,
+            bookingData: saved.bookingData,
+            grandTotal: saved.grandTotal,
+            paymentDueAmount: saved.paymentDueAmount,
+          }
+        : prev,
+    );
+  }, []);
 
   const retryFulfillmentFromStepper = useCallback(async () => {
     if (!token || !data) return;
@@ -486,15 +504,19 @@ export default function SharedPackersBookingReview() {
     void load();
   }, [load]);
 
-  const booking = data?.bookingData ?? {};
+  const savedBooking = data?.bookingData ?? {};
+  // While editing items, show the server's recalculated preview.
+  const booking = itemsPreview?.bookingData ?? savedBooking;
+  const grandTotal = itemsPreview?.grandTotal ?? data?.grandTotal ?? 0;
+  const paymentDueAmount = itemsPreview?.paymentDueAmount ?? data?.paymentDueAmount ?? 0;
   const isHouse = data?.bookingType === "house_shifting";
   const isBike = data?.bookingType === "bike_shifting";
 
   const items = useMemo(() => {
-    const raw = booking.items;
+    const raw = savedBooking.items;
     if (!Array.isArray(raw)) return [];
     return raw as Array<Record<string, unknown>>;
-  }, [booking.items]);
+  }, [savedBooking.items]);
 
   const addOns = useMemo(() => {
     const raw = booking.addOns;
@@ -548,7 +570,7 @@ export default function SharedPackersBookingReview() {
   }, [booking, isHouse]);
 
   const handlePay = async () => {
-    if (!data || paying) return;
+    if (!data || paying || editingItems) return;
     setPaymentNotice(null);
     if (data.isAdminShare) {
       if (!name.trim() || !email.trim() || !phone.trim()) {
@@ -701,11 +723,12 @@ export default function SharedPackersBookingReview() {
       data.paymentDueLabel === "full"
         ? `Pay ${formatRupee(data.paymentDueAmount)}`
         : `Pay advance ${formatRupee(data.paymentDueAmount)}`;
+    if (editingItems) return "Save or cancel item changes to pay";
     if (payPhase === "preparing") return "Preparing payment…";
     if (payPhase === "checkout") return "Complete payment in Razorpay…";
     if (payPhase === "verifying") return "Confirming payment…";
     return paying ? "Processing…" : amount;
-  }, [data, payPhase, paying]);
+  }, [data, payPhase, paying, editingItems]);
 
   if (loading) {
     return (
@@ -823,21 +846,15 @@ export default function SharedPackersBookingReview() {
           </div>
         </Section>
 
-        {isHouse && items.length > 0 && (
-          <Section title="Inventory / Items">
-            <ul className="divide-y divide-slate-100">
-              {items.map((item, idx) => {
-                const itemName = String(item.name || item.itemName || item.title || "Item");
-                const qty = item.quantity != null ? coerceNum(item.quantity) : 0;
-                return (
-                  <li key={idx} className="flex justify-between gap-3 py-2 text-sm">
-                    <span className="text-slate-800">{itemName}</span>
-                    {qty > 0 && <span className="font-medium text-slate-600">× {qty}</span>}
-                  </li>
-                );
-              })}
-            </ul>
-          </Section>
+        {isHouse && (
+          <SharedBookingItemsEditor
+            token={data.shareToken}
+            items={items}
+            disabled={paying}
+            onEditingChange={setEditingItems}
+            onPreview={setItemsPreview}
+            onSaved={handleItemsSaved}
+          />
         )}
 
         {isHouse && booking.packingStyle && (
@@ -873,7 +890,7 @@ export default function SharedPackersBookingReview() {
           </Section>
         )}
 
-        <Section title="Price breakdown">
+        <Section title={itemsPreview ? "Price breakdown (updated, not saved)" : "Price breakdown"}>
           {isHouse ? (
             <>
               {fareLines.map((line, i) => (
@@ -885,11 +902,11 @@ export default function SharedPackersBookingReview() {
                 />
               ))}
               <div className="my-2 border-t border-slate-200" />
-              <Row label="Grand total" value={formatRupee(data.grandTotal)} highlight />
-              <Row label="Advance (pay now)" value={formatRupee(data.paymentDueAmount)} highlight />
+              <Row label="Grand total" value={formatRupee(grandTotal)} highlight />
+              <Row label="Advance (pay now)" value={formatRupee(paymentDueAmount)} highlight />
               <Row
                 label="Balance after advance"
-                value={formatRupee(Math.max(0, data.grandTotal - data.paymentDueAmount))}
+                value={formatRupee(Math.max(0, grandTotal - paymentDueAmount))}
               />
             </>
           ) : (
@@ -979,7 +996,7 @@ export default function SharedPackersBookingReview() {
 
         <button
           type="button"
-          disabled={paying}
+          disabled={paying || editingItems}
           onClick={() => void handlePay()}
           className="w-full rounded-xl bg-blue-600 py-4 text-base font-bold text-white shadow-lg transition hover:bg-blue-700 disabled:opacity-60"
         >

@@ -42,6 +42,76 @@ export async function fetchSharedPackersBooking(
   return body as SharedPackersBookingResponse;
 }
 
+export interface SharedItemCatalogCategory {
+  name: string;
+  subCategories: Array<{
+    name: string;
+    items: Array<{ name: string; cft: number }>;
+  }>;
+}
+
+export async function fetchSharedPackersItemCatalog(
+  token: string,
+): Promise<SharedItemCatalogCategory[]> {
+  const url = `${apiUrl("/getSharedPackersItemCatalog")}?token=${encodeURIComponent(token)}`;
+  const res = await fetch(url);
+  const body = await res.json().catch(() => ({}));
+  if (!res.ok) {
+    throw new Error((body as { error?: string }).error || "Failed to load items");
+  }
+  return ((body as { categories?: SharedItemCatalogCategory[] }).categories) ?? [];
+}
+
+export interface SharedItemLine {
+  itemName: string;
+  quantity: number;
+}
+
+export interface UpdateSharedItemsResponse {
+  saved: boolean;
+  grandTotal: number;
+  paymentDueAmount: number;
+  packingSwitched: boolean;
+  bookingData: Record<string, unknown>;
+}
+
+export class SharedItemsUpdateError extends Error {
+  code?: string;
+  supportPhone?: string;
+  constructor(message: string, code?: string, supportPhone?: string) {
+    super(message);
+    this.name = "SharedItemsUpdateError";
+    this.code = code;
+    this.supportPhone = supportPhone;
+  }
+}
+
+export async function updateSharedPackersBookingItems(payload: {
+  token: string;
+  items: SharedItemLine[];
+  dryRun?: boolean;
+  acceptStandardPacking?: boolean;
+}): Promise<UpdateSharedItemsResponse> {
+  const res = await fetch(apiUrl("/updateSharedPackersBookingItems"), {
+    method: "POST",
+    headers: { "Content-Type": "application/json" },
+    body: JSON.stringify(payload),
+  });
+  const body = (await res.json().catch(() => ({}))) as {
+    error?: string;
+    code?: string;
+    supportPhone?: string;
+  };
+  if (!res.ok) {
+    throw new SharedItemsUpdateError(
+      body.error || "Failed to update items",
+      body.code,
+      body.supportPhone,
+    );
+  }
+  return body as unknown as UpdateSharedItemsResponse;
+}
+
 export interface CreateSharedPaymentOrderRequest {
   token: string;
   scheduledDate?: number;
