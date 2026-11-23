@@ -30,6 +30,16 @@ export interface SharedPackersBookingResponse {
   completedOrderId?: string | null;
 }
 
+/** Link already paid — server returns 410 with the created orderId. */
+export class SharedBookingAlreadyPaidError extends Error {
+  orderId: string;
+  constructor(message: string, orderId: string) {
+    super(message);
+    this.name = "SharedBookingAlreadyPaidError";
+    this.orderId = orderId;
+  }
+}
+
 export async function fetchSharedPackersBooking(
   token: string,
 ): Promise<SharedPackersBookingResponse> {
@@ -37,7 +47,14 @@ export async function fetchSharedPackersBooking(
   const res = await fetch(url);
   const body = await res.json().catch(() => ({}));
   if (!res.ok) {
-    throw new Error((body as { error?: string }).error || "Failed to load booking");
+    const b = body as { error?: string; orderId?: string };
+    if (res.status === 410 && typeof b.orderId === "string" && b.orderId.trim()) {
+      throw new SharedBookingAlreadyPaidError(
+        b.error || "This booking link has already been used",
+        b.orderId.trim(),
+      );
+    }
+    throw new Error(b.error || "Failed to load booking");
   }
   return body as SharedPackersBookingResponse;
 }
@@ -119,6 +136,8 @@ export interface CreateSharedPaymentOrderRequest {
   name?: string;
   email?: string;
   phone?: string;
+  /** House shifting: customer ticked "I have read and agree to the GoShift Terms & Conditions." */
+  termsAccepted?: boolean;
 }
 
 export interface CreateSharedPaymentOrderResponse {

@@ -8,7 +8,10 @@ import {
 } from "react";
 import { useParams } from "react-router-dom";
 import logo from "@/assets/logo.png";
+import { GooglePlayStoreButton } from "@/components/GooglePlayStoreButton";
+import { PLAY_STORE_CUSTOMER_APP } from "@/lib/playStoreLinks";
 import SharedBookingItemsEditor from "@/components/SharedBookingItemsEditor";
+import HouseShiftingTermsDialog from "@/components/HouseShiftingTermsDialog";
 import {
   coerceNum,
   completeSharedPackersPaymentWithRetry,
@@ -20,6 +23,7 @@ import {
   loadRazorpayScript,
   openRazorpayCheckout,
   PaymentCancelledError,
+  SharedBookingAlreadyPaidError,
   type SharedPackersBookingResponse,
   type UpdateSharedItemsResponse,
 } from "@/lib/sharedBookingApi";
@@ -375,6 +379,20 @@ function ScheduleTimeSlots({
   );
 }
 
+function SharedBookingLegalLinks() {
+  return (
+    <p className="mt-6 text-center text-xs text-slate-500">
+      <a href="/terms-of-service" target="_blank" rel="noopener noreferrer" className="underline underline-offset-2 hover:text-slate-700">
+        Terms &amp; Conditions
+      </a>
+      <span className="mx-2">·</span>
+      <a href="/privacy-policy" target="_blank" rel="noopener noreferrer" className="underline underline-offset-2 hover:text-slate-700">
+        Privacy Policy
+      </a>
+    </p>
+  );
+}
+
 export default function SharedPackersBookingReview() {
   const { token = "" } = useParams<{ token: string }>();
   const [loading, setLoading] = useState(true);
@@ -384,6 +402,9 @@ export default function SharedPackersBookingReview() {
   const [paying, setPaying] = useState(false);
   const [payPhase, setPayPhase] = useState<"idle" | "preparing" | "checkout" | "verifying">("idle");
   const [success, setSuccess] = useState<{ orderId: string; message: string } | null>(null);
+  const [alreadyPaidOrderId, setAlreadyPaidOrderId] = useState<string | null>(null);
+  const [termsAccepted, setTermsAccepted] = useState(false);
+  const [termsOpen, setTermsOpen] = useState(false);
   const [fulfillment, setFulfillment] = useState<FulfillmentProgress | null>(null);
   const [fulfillmentRetrying, setFulfillmentRetrying] = useState(false);
   const [editingItems, setEditingItems] = useState(false);
@@ -494,6 +515,10 @@ export default function SharedPackersBookingReview() {
         setPhone(res.personalDetails.phone || "");
       }
     } catch (e) {
+      if (e instanceof SharedBookingAlreadyPaidError) {
+        setAlreadyPaidOrderId(e.orderId);
+        return;
+      }
       setError(e instanceof Error ? e.message : "Failed to load booking");
     } finally {
       setLoading(false);
@@ -586,6 +611,10 @@ export default function SharedPackersBookingReview() {
       setError("Please select a time slot.");
       return;
     }
+    if (isHouse && !termsAccepted) {
+      setError("Please read and accept the GoShift Terms & Conditions.");
+      return;
+    }
 
     try {
       setPaying(true);
@@ -597,6 +626,7 @@ export default function SharedPackersBookingReview() {
         token: data.shareToken,
         scheduledDate: dateToEpoch(selectedDate),
         timeSlot: timeSlot.trim(),
+        ...(isHouse ? { termsAccepted } : {}),
         ...(data.isAdminShare
           ? { name: name.trim(), email: email.trim(), phone: phone.trim() }
           : {}),
@@ -780,6 +810,38 @@ export default function SharedPackersBookingReview() {
           onRetry={retryFulfillmentFromStepper}
           retrying={fulfillmentRetrying}
         />
+      </div>
+    );
+  }
+
+  if (alreadyPaidOrderId) {
+    return (
+      <div className="min-h-screen bg-[#EFF6FF]">
+        <div className="mx-auto max-w-lg px-4 py-16">
+          <div className="rounded-2xl border border-green-200 bg-white p-8 text-center shadow-sm">
+            <img src={logo} alt="GoShift" className="mx-auto h-12 w-auto" />
+            <div className="mx-auto mt-6 flex h-14 w-14 items-center justify-center rounded-full bg-green-100 text-2xl font-bold text-green-700">
+              ✓
+            </div>
+            <h1 className="mt-4 text-xl font-bold text-green-800">Payment is already done</h1>
+            <p className="mt-2 text-sm text-slate-700">
+              Your order has been accepted and assigned.
+            </p>
+            <p className="mt-3 text-sm font-semibold text-slate-700">Order ID: {alreadyPaidOrderId}</p>
+            <p className="mt-6 text-sm text-slate-600">
+              Please download the GoShift app from the Play Store to see your order details.
+            </p>
+            <div className="mt-4 flex justify-center">
+              <GooglePlayStoreButton
+                href={PLAY_STORE_CUSTOMER_APP}
+                label="GoShift Customer App"
+                variant="onLight"
+                showCaption={false}
+              />
+            </div>
+          </div>
+          <SharedBookingLegalLinks />
+        </div>
       </div>
     );
   }
@@ -994,9 +1056,48 @@ export default function SharedPackersBookingReview() {
           </div>
         )}
 
+        {isHouse && (
+          <div className="mb-4 rounded-lg border border-slate-200 bg-white px-4 py-3 text-sm text-slate-700">
+            <label className="flex cursor-pointer items-start gap-3">
+              <input
+                type="checkbox"
+                className="mt-0.5 h-4 w-4 shrink-0 accent-blue-600"
+                checked={termsAccepted}
+                onChange={(e) => {
+                  setTermsAccepted(e.target.checked);
+                  if (e.target.checked) setError(null);
+                }}
+              />
+              <span>
+                I have read and agree to the GoShift{" "}
+                <button
+                  type="button"
+                  onClick={(e) => {
+                    e.preventDefault();
+                    setTermsOpen(true);
+                  }}
+                  className="font-medium text-blue-600 underline underline-offset-2"
+                >
+                  Terms &amp; Conditions
+                </button>
+                .
+              </span>
+            </label>
+            <p className="mt-2 pl-7 text-xs text-slate-500">
+              See also our{" "}
+              <a href="/privacy-policy" target="_blank" rel="noopener noreferrer" className="font-medium text-blue-600 underline underline-offset-2">
+                Privacy Policy
+              </a>
+              .
+            </p>
+          </div>
+        )}
+
+        <HouseShiftingTermsDialog open={termsOpen} onOpenChange={setTermsOpen} />
+
         <button
           type="button"
-          disabled={paying || editingItems}
+          disabled={paying || editingItems || (isHouse && !termsAccepted)}
           onClick={() => void handlePay()}
           className="w-full rounded-xl bg-blue-600 py-4 text-base font-bold text-white shadow-lg transition hover:bg-blue-700 disabled:opacity-60"
         >
@@ -1006,6 +1107,19 @@ export default function SharedPackersBookingReview() {
         <p className="mt-4 text-center text-xs text-slate-500">
           After payment, check the GoShift customer app for full order details.
         </p>
+        {!isHouse && (
+        <p className="mt-2 text-center text-xs text-slate-500">
+          By paying, you agree to our{" "}
+          <a href="/terms-of-service" target="_blank" rel="noopener noreferrer" className="font-medium text-blue-600 underline underline-offset-2">
+            Terms &amp; Conditions
+          </a>{" "}
+          and{" "}
+          <a href="/privacy-policy" target="_blank" rel="noopener noreferrer" className="font-medium text-blue-600 underline underline-offset-2">
+            Privacy Policy
+          </a>
+          .
+        </p>
+        )}
       </div>
     </div>
   );
